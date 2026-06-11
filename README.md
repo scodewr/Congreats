@@ -33,10 +33,18 @@ O modo é definido pela variável de ambiente `CONGREATS_MODE` (`WORLD` ou `ENTE
 
 ## Pré-requisitos
 
-- Docker 24+ e Docker Compose v2+
-- Java 21+ *(apenas para desenvolvimento local sem Docker)*
-- Maven 3.9+ *(apenas para desenvolvimento local sem Docker)*
-- Node.js 20+ e npm *(apenas para desenvolvimento local sem Docker)*
+### Para rodar com Docker (recomendado)
+
+- Docker 24+ com o plugin Compose v2 (`docker compose`, não `docker-compose`)
+- Node.js 20+ e npm — necessário apenas para gerar o `frontend/package-lock.json` antes do primeiro build
+  *(ou use `make build`, que faz isso automaticamente)*
+
+### Para desenvolvimento local (sem Docker)
+
+- Java 21 (OpenJDK recomendado — `sudo apt install openjdk-21-jdk`)
+- Maven 3.9+ (`sudo apt install maven`)
+- Node.js 20+ e npm
+- PostgreSQL 16 (pode ser via Docker: `docker compose up -d postgres`)
 
 ---
 
@@ -58,65 +66,67 @@ CONGREATS_JWT_SECRET=seu-segredo-longo-e-aleatorio-aqui
 
 ## Build das Imagens Docker
 
-As imagens são construídas a partir de Dockerfiles multi-stage — nenhum pré-requisito local é necessário além do Docker.
+As imagens são construídas a partir de Dockerfiles multi-stage. O `Makefile` inclui todas as etapas de pré-build automaticamente.
 
-### Backend
+### Forma recomendada (via Makefile)
 
 ```bash
-docker build \
-  -t congreats-backend:latest \
-  -f backend/src/main/docker/Dockerfile.jvm \
-  ./backend
+make build
 ```
 
-O build acontece em dois estágios:
-1. `maven:3.9-eclipse-temurin-21` — compila o projeto e empacota o fast-jar
+O `make build` garante que o `frontend/package-lock.json` existe antes de invocar o Docker, evitando falhas no `npm install` dentro do container.
+
+### Manualmente
+
+Se preferir rodar sem o `make`:
+
+```bash
+# 1. Gerar o lockfile do frontend (obrigatório na primeira vez)
+cd frontend && npm install --package-lock-only && cd ..
+
+# 2. Build das imagens
+docker compose build
+```
+
+#### Detalhes de cada imagem
+
+**Backend** (`backend/src/main/docker/Dockerfile.jvm`):
+1. `maven:3.9-eclipse-temurin-21` — baixa dependências, compila e empacota o fast-jar
 2. `eclipse-temurin:21-jre` — imagem de runtime enxuta com apenas o JRE
 
-### Frontend
-
-```bash
-docker build \
-  -t congreats-frontend:latest \
-  ./frontend
-```
-
-O build acontece em dois estágios:
+**Frontend** (`frontend/Dockerfile`):
 1. `node:20-alpine` — instala dependências e gera os assets estáticos com `npm run build`
 2. `nginx:1.27-alpine` — serve os assets e faz proxy `/api/` → backend
-
-### Ambos de uma vez
-
-```bash
-docker-compose build
-```
 
 ---
 
 ## Subindo o Sistema
 
-### Primeira execução (build + start)
+### Forma recomendada (via Makefile)
+
+| Comando | O que faz |
+|---------|-----------|
+| `make up` | Build + sobe todos os serviços em background |
+| `make down` | Para e remove os containers (dados preservados) |
+| `make down-v` | Para, remove containers **e volumes** (apaga banco e uploads) |
+| `make restart` | Para e sobe novamente |
+| `make logs` | Acompanha os logs em tempo real |
+| `make ps` | Lista containers e status |
+
+### Manualmente (docker compose)
 
 ```bash
-docker-compose up --build
-```
+# Primeira execução (build + start)
+docker compose up --build -d
 
-### Execuções seguintes (sem rebuild)
+# Execuções seguintes (sem rebuild)
+docker compose up -d
 
-```bash
-docker-compose up -d
-```
+# Parar o sistema
+docker compose down
 
-### Parar o sistema
-
-```bash
-docker-compose down
-```
-
-Para remover também os volumes (apaga dados do banco e uploads):
-
-```bash
-docker-compose down -v
+# Remover também os volumes (apaga dados do banco e uploads)
+docker compose down -v
 ```
 
 ---
@@ -154,7 +164,7 @@ Para iteração rápida com hot reload, suba apenas o banco via Docker e rode o 
 ### 1. Banco de dados
 
 ```bash
-docker-compose up -d postgres
+docker compose up -d postgres
 ```
 
 ### 2. Backend
