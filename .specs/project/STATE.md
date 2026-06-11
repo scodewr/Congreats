@@ -35,23 +35,46 @@
 **Trade-off:** Usuário não pode corrigir erros — mitigado por revisão antes do envio.
 **Impact:** Sem endpoints de UPDATE/DELETE para reconhecimentos no domínio de usuário.
 
-### AD-005: Servidor de aplicação Java EE a definir (2026-06-11)
+### AD-005: Quarkus como runtime do backend (2026-06-11)
 
-**Decision:** Backend será Jakarta EE 10 + Java 21, mas o servidor (WildFly vs Quarkus) ainda não foi definido.
-**Reason:** Quarkus oferece startup rápido e modo nativo; WildFly é mais tradicional e full-spec.
-**Trade-off:** Quarkus = menor footprint, curva de aprendizado diferente. WildFly = mais familiar, maior overhead.
-**Impact:** Estrutura de projeto e configurações de deploy diferem. Decisão deve ser tomada antes de AUTH-T1.
+**Decision:** Backend usa Quarkus com Jakarta EE 10 / Java 21. WildFly descartado.
+**Reason:** Quarkus prioriza economia de recursos (startup sub-segundo, menor footprint de memória) e alto throughput. Ecossistema maduro com CDI, JPA (Hibernate ORM), SmallRye JWT e RESTEasy.
+**Trade-off:** Quarkus não é full Java EE spec — algumas APIs diferem (ex: JAX-RS via RESTEasy, CDI via ArC). Menor overhead porém com especificidades do ecossistema Quarkus.
+**Impact:** AUTH-T1 scaffolding usa `quarkus-maven-plugin`. Dependências: `quarkus-resteasy-reactive-jackson`, `quarkus-hibernate-orm-panache`, `quarkus-smallrye-jwt`, `quarkus-jdbc-postgresql`.
+
+### AD-006: Dois modos de operação — World e Enterprise (2026-06-11)
+
+**Decision:** A plataforma opera em dois modos configurados via `CONGREATS_MODE=WORLD|ENTERPRISE`.
+**Reason:** Flexibilidade de implantação: World para uso aberto/comunitário; Enterprise para organizações com controle hierárquico (modelo IAM).
+**Trade-off:** Lógica de autorização mais complexa — requer estratégia de permissões condicional ao modo.
+**Impact:** `AuthorizationService` deve verificar o modo ativo. No World: auto-registro, usuário nasce como ADMIN. No Enterprise: apenas master user cria usuários e delega permissões. Afeta AUTH-T1 e AUTH-T5.
+
+### AD-007: Reconhecimento dinâmico via integração com APIs externas (2026-06-11)
+
+**Decision:** Versão 3.0 incluirá conector genérico para APIs externas dispararem reconhecimentos automaticamente.
+**Reason:** Evidências objetivas (tasks fechadas, PRs, entregas) tornam o reconhecimento mais justo e frequente.
+**Trade-off:** Reconhecimentos automáticos podem parecer menos pessoais — mitigar permitindo revisão antes de publicar ou marcando como "automático".
+**Impact:** Requer modelagem de `IntegrationEvent` no domínio e endpoints de webhook no v3.0.
+
+### AD-008: Sistema de notificações multi-canal (v2.2) (2026-06-11)
+
+**Decision:** Notificações serão enviadas por Email (obrigatório), WhatsApp e SMS (opcionais, configuráveis pelo usuário).
+**Reason:** Manter o profissional informado em canais que já usa aumenta engajamento e senso de valorização.
+**Trade-off:** Integração com WhatsApp (Twilio/Meta API) e SMS adiciona dependência externa e custo por mensagem.
+**Impact:** Requer `NotificationService` port com implementações por canal. v2.2 entrega email primeiro; WhatsApp/SMS em releases seguintes do mesmo milestone.
+
+### AD-009: Certificações de excelência como feature v4.0 (2026-06-11)
+
+**Decision:** Área de certificações formais emitidas pela própria plataforma baseadas em condições objetivas mensuráveis.
+**Reason:** Evolução natural do sistema de troféus — o reconhecimento formal dentro da plataforma tem valor de credencial.
+**Trade-off:** Valor percebido das certificações depende da adoção da plataforma — quanto mais organizações usarem, mais valiosa a certificação.
+**Impact:** Requer entidade `Certification`, `CertificationCriteria`, e emissão de certificado digital (PDF ou badge verificável).
 
 ---
 
 ## Active Blockers
 
-### B-001: Servidor de aplicação Java EE não definido
-
-**Discovered:** 2026-06-11
-**Impact:** Alto — afeta scaffolding do projeto backend, configuração de CDI, JPA e JWT.
-**Workaround:** Iniciar com a estrutura de domínio e application (agnóstica ao servidor) enquanto a decisão é tomada.
-**Resolution:** Decidir entre WildFly e Quarkus antes de iniciar AUTH-T1.
+_(B-001 resolvido — Quarkus confirmado como runtime. Ver AD-005.)_
 
 ---
 
@@ -82,10 +105,14 @@ _(Nenhum ainda — projeto recém iniciado)_
 
 ## Todos
 
-- [ ] Decidir servidor de aplicação: WildFly vs Quarkus (resolve B-001)
+- [x] Decidir servidor de aplicação: WildFly vs Quarkus → **Quarkus confirmado (AD-005)**
 - [ ] Definir estratégia de upload de fotos (S3? FileSystem local? CDN?)
 - [ ] Definir estratégia de autenticação mobile (mesmo JWT ou sessão separada?)
 - [ ] Definir categorias de reconhecimento iniciais (valores fixos ou configuráveis por admin?)
+- [ ] Detalhar spec do modo Enterprise: hierarquia de permissões e modelo de delegação (antes de iniciar AUTH-T1)
+- [ ] Definir provedores de notificação para v2.2: Twilio (WhatsApp+SMS)? SendGrid (email)?
+- [ ] Mapear primeiros conectores de integração para v3.0: Jira, GitHub, Linear?
+- [ ] Definir critérios de emissão de certificações para v4.0
 
 ---
 

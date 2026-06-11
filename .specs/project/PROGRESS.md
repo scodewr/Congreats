@@ -11,13 +11,16 @@
 
 | Versão | Status    | Features                              | Tasks | Concluídas | %    |
 |--------|-----------|---------------------------------------|-------|-----------|------|
-| v1.0   | PLANNING  | Auth, Profile, Recognition            | 25    | 0         | 0%   |
+| v1.0   | PLANNING  | Auth (World+Enterprise), Profile, Recognition | 25 | 0   | 0%   |
 | v1.1   | PLANNED   | Discovery Feed                        | 5     | 0         | 0%   |
 | v1.2   | PLANNED   | Workspaces                            | 8     | 0         | 0%   |
 | v1.3   | PLANNED   | Admin Panel                           | 8     | 0         | 0%   |
 | v2.0   | PLANNED   | Medals & Trophies                     | 7     | 0         | 0%   |
 | v2.1   | PLANNED   | Skill Validation                      | 8     | 0         | 0%   |
-| v3.0   | PLANNED   | Challenges                            | TBD   | 0         | TBD  |
+| v2.2   | PLANNED   | Notifications (Email, WhatsApp, SMS)  | TBD   | 0         | TBD  |
+| v3.0   | PLANNED   | API Integrations (GitHub, Jira, Linear) | TBD | 0        | TBD  |
+| v3.1   | PLANNED   | Challenges                            | TBD   | 0         | TBD  |
+| v4.0   | PLANNED   | Certifications of Excellence          | TBD   | 0         | TBD  |
 | **Total** | —      | —                                     | **61+** | **0**   | **0%** |
 
 ---

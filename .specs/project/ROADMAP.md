@@ -7,17 +7,18 @@
 
 ## v1.0 — Foundation (MVP)
 
-**Goal:** Sistema funcional com autenticação, perfil profissional completo e fluxo de reconhecimento entre colegas.
+**Goal:** Sistema funcional com autenticação (suporte a World e Enterprise mode), perfil profissional completo e fluxo de reconhecimento entre colegas.
 **Target:** MVP utilizável internamente — todas as features P1 implementadas e verificadas.
 
 ### Features
 
 **Authentication & User Management** — PLANNED
 
-- Registro de usuário (nome, email, empresa)
+- **World Mode:** Auto-registro público — usuário criado como admin com acesso completo
+- **Enterprise Mode:** Apenas admin master cria e delega acesso a usuários (modelo IAM)
 - Login com JWT + refresh token
 - Alteração de senha
-- Gestão básica de conta
+- Modo configurável via `CONGREATS_MODE` environment variable
 
 **Professional Profile** — PLANNED
 
@@ -111,7 +112,39 @@
 
 ---
 
-## v3.0 — Challenges
+## v2.2 — Notifications
+
+**Goal:** Manter profissionais informados em tempo real sobre reconhecimentos e validações via múltiplos canais.
+
+### Features
+
+**Notification System** — PLANNED
+
+- Notificação ao ser reconhecido por colega (Email obrigatório; WhatsApp/SMS opcionais)
+- Notificação ao ter validação de habilidade solicitada
+- Notificação ao ter validação aprovada ou rejeitada
+- Configuração de canais de notificação pelo próprio usuário
+- Templates de mensagem configuráveis por admin
+
+---
+
+## v3.0 — API Integrations
+
+**Goal:** Gerar reconhecimentos automaticamente a partir de indicadores de ferramentas externas, tornando o reconhecimento dinâmico e baseado em evidências.
+
+### Features
+
+**External API Integrations** — PLANNED
+
+- Conector genérico via webhooks / API REST para integrações externas
+- Reconhecimento dinâmico disparado por: tasks fechadas, PRs mergeados, projetos entregues, itens criados
+- Mapeamento configurável: evento externo → categoria + habilidade + profissional reconhecido
+- Painel de gestão de integrações no admin
+- Primeiros conectores-alvo: Jira, GitHub, Linear, Trello
+
+---
+
+## v3.1 — Challenges
 
 **Goal:** Sistema de desafios para engajamento adicional (escopo a definir).
 
@@ -123,11 +156,27 @@
 
 ---
 
+## v4.0 — Certifications of Excellence
+
+**Goal:** Certificação formal dentro da plataforma — profissional reconhecido como referência em áreas criadas no próprio Congreats, com emissão baseada em condições objetivas mensuráveis.
+
+### Features
+
+**Certifications** — PLANNED
+
+- Criação de áreas de certificação pelo admin (ex: "Arquiteto de Solução Congreats Certified")
+- Critérios objetivos: nível de troféus, validações aprovadas, eventos vencidos, reconhecimentos acumulados
+- Emissão de certificado digital verificável
+- Exibição de certificações no perfil profissional
+- Expiração e renovação configuráveis por área
+
+---
+
 ## Future Considerations
 
 - Integração com sistemas de RH (HRIS) para importar dados organizacionais
 - Notificações push via React Native
 - Social login (OAuth2 — Google, Microsoft)
-- API pública para integrações de terceiros
 - Dashboards analíticos avançados para gestores
 - Reconhecimento anônimo (opcional por empresa)
+- Modo nativo GraalVM para deploy de alta performance

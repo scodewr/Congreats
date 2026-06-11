@@ -55,6 +55,29 @@
 
 ---
 
+## AUTH-T2b: Configuração do Modo de Operação (World vs Enterprise)
+
+**What:** Implementar `OperationModeConfig` que lê `CONGREATS_MODE` e controla comportamento de registro e permissões padrão.
+
+**Where:**
+- `infrastructure/config/OperationModeConfig.java`
+- `application/port/in/OperationMode.java` (enum: WORLD, ENTERPRISE)
+- `backend/src/main/resources/application.properties` — `congreats.mode=${CONGREATS_MODE:WORLD}`
+
+**Depends on:** AUTH-T1
+
+**Done when:**
+- [ ] `CONGREATS_MODE=WORLD` → auto-registro habilitado, novo usuário nasce com role ADMIN
+- [ ] `CONGREATS_MODE=ENTERPRISE` → auto-registro retorna 403; apenas admin master cria usuários
+- [ ] Configuração injetável via CDI/Quarkus `@ConfigProperty`
+- [ ] Testes unitários para ambos os modos
+
+**Tests:** `mvn test -Dtest="OperationModeConfigTest"`
+
+**Commit:** `feat(config): add dual operation mode (World/Enterprise) controlled by CONGREATS_MODE env var`
+
+---
+
 ## AUTH-T3: Entidade de Domínio User e Porta de Repositório
 
 **What:** Implementar entidade `User`, Value Object `Email`, eventos de domínio, e interface `UserRepository`.

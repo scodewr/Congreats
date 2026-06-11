@@ -5,7 +5,7 @@
 
 ## Problem Statement
 
-Para que profissionais possam reconhecer colegas e receber reconhecimentos, a plataforma precisa de um sistema de identidade seguro e simples. Sem autenticação, não há como associar reconhecimentos a pessoas reais, nem garantir integridade dos dados. O foco é simplicidade (registro rápido) sem sacrificar segurança (JWT com refresh token).
+Para que profissionais possam reconhecer colegas e receber reconhecimentos, a plataforma precisa de um sistema de identidade seguro que se adapte ao contexto de implantação. Em **World Mode**, qualquer pessoa se registra e obtém acesso imediato. Em **Enterprise Mode**, um admin master controla quem acessa e com quais permissões (modelo AWS IAM). O foco é simplicidade no World e controle granular no Enterprise, sem sacrificar segurança em nenhum dos casos.
 
 ## Goals
 
@@ -21,23 +21,25 @@ Para que profissionais possam reconhecer colegas e receber reconhecimentos, a pl
 | Autenticação multifator (MFA) | v1 — fora do escopo MVP |
 | Recuperação de senha por email | v1 — pode ser adicionado como quick task |
 | SSO corporativo (SAML, LDAP) | Future consideration |
+| Registro no Enterprise Mode | Enterprise Mode: usuário só existe se admin master criar |
 
 ---
 
 ## User Stories
 
-### P1: Registro de Usuário ⭐ MVP
+### P1: Registro de Usuário — World Mode ⭐ MVP
 
-**User Story:** Como profissional, quero me registrar com nome, email e senha para acessar a plataforma.
+**User Story:** Como profissional (World Mode), quero me registrar com nome, email e senha para acessar a plataforma com acesso completo imediato.
 
 **Why P1:** Sem registro não há usuários, sem usuários não há reconhecimentos — é o pré-requisito absoluto.
 
 **Acceptance Criteria:**
 
-1. WHEN usuário submete formulário com nome, email válido e senha (mínimo 8 caracteres) THEN sistema SHALL criar conta e retornar JWT + refresh token.
-2. WHEN email já está cadastrado THEN sistema SHALL retornar erro 409 com mensagem "E-mail já cadastrado".
-3. WHEN email é inválido ou senha tem menos de 8 caracteres THEN sistema SHALL retornar erro 400 com campo(s) inválido(s) identificados.
-4. WHEN registro é bem-sucedido THEN sistema SHALL redirecionar usuário para página de completar perfil.
+1. WHEN `CONGREATS_MODE=WORLD` e usuário submete formulário com nome, email válido e senha (mínimo 8 caracteres) THEN sistema SHALL criar conta com role ADMIN e retornar JWT + refresh token.
+2. WHEN `CONGREATS_MODE=ENTERPRISE` e endpoint de auto-registro é chamado THEN sistema SHALL retornar erro 403 com mensagem "Registro público não habilitado nesta instalação".
+3. WHEN email já está cadastrado THEN sistema SHALL retornar erro 409 com mensagem "E-mail já cadastrado".
+4. WHEN email é inválido ou senha tem menos de 8 caracteres THEN sistema SHALL retornar erro 400 com campo(s) inválido(s) identificados.
+5. WHEN registro é bem-sucedido THEN sistema SHALL redirecionar usuário para página de completar perfil.
 
 **Independent Test:** Abrir tela de registro, preencher dados válidos, verificar que o token é recebido e usuário é redirecionado.
 
