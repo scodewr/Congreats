@@ -42,10 +42,31 @@ O modo é definido pela variável de ambiente `CONGREATS_MODE` (`WORLD` ou `ENTE
 
 ## Rodando Localmente
 
-### 1. Banco de dados
+### Opção A — Stack completa com Docker
+
+Sobe PostgreSQL + backend + frontend em um único comando:
 
 ```bash
-docker-compose up -d
+# Copie o arquivo de variáveis de ambiente (ajuste os valores sensíveis)
+cp .env.example .env
+
+docker-compose up --build
+```
+
+| Serviço | URL |
+|---------|-----|
+| Frontend | http://localhost |
+| Backend | http://localhost:8080 |
+| PostgreSQL | localhost:5432 |
+
+---
+
+### Opção B — Desenvolvimento local
+
+#### 1. Banco de dados
+
+```bash
+docker-compose up -d postgres
 ```
 
 Sobe um PostgreSQL 16 na porta `5432` com banco `congreats`, usuário `congreats`, senha `congreats`.
@@ -67,11 +88,13 @@ O Quarkus em modo dev aplica as migrations do Flyway automaticamente e recompila
 
 | Variável | Padrão | Descrição |
 |----------|--------|-----------|
-| `DB_URL` | `jdbc:postgresql://localhost:5432/congreats` | URL do banco |
-| `DB_USER` | `congreats` | Usuário do banco |
-| `DB_PASSWORD` | `congreats` | Senha do banco |
+| `CONGREATS_DB_URL` | `jdbc:postgresql://localhost:5432/congreats` | URL do banco |
+| `CONGREATS_DB_USER` | `congreats` | Usuário do banco |
+| `CONGREATS_DB_PASSWORD` | `congreats` | Senha do banco |
 | `CONGREATS_JWT_SECRET` | `change-me-in-production` | Segredo HMAC256 do JWT |
 | `CONGREATS_MODE` | `WORLD` | Modo de operação (`WORLD` ou `ENTERPRISE`) |
+| `CONGREATS_STORAGE_PATH` | `./uploads/photos` | Diretório local para fotos |
+| `CONGREATS_STORAGE_BASE_URL` | `http://localhost:8080/files` | URL base para servir fotos |
 
 Para sobrescrever em desenvolvimento, crie um arquivo `backend/src/main/resources/.env` ou exporte as variáveis no shell antes de subir.
 

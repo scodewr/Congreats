@@ -1,4 +1,5 @@
 services:
+
   postgres:
     image: postgres:16-alpine
     environment:
@@ -15,5 +16,37 @@ services:
       timeout: 5s
       retries: 5
 
+  backend:
+    build:
+      context: ./backend
+      dockerfile: src/main/docker/Dockerfile.jvm
+    image: congreats-backend:latest
+    environment:
+      CONGREATS_DB_URL: jdbc:postgresql://postgres:5432/congreats
+      CONGREATS_DB_USER: congreats
+      CONGREATS_DB_PASSWORD: congreats
+      CONGREATS_JWT_SECRET: ${CONGREATS_JWT_SECRET:-change-me-in-production}
+      CONGREATS_MODE: ${CONGREATS_MODE:-WORLD}
+      CONGREATS_STORAGE_PATH: /deployments/uploads/photos
+      CONGREATS_STORAGE_BASE_URL: ${CONGREATS_STORAGE_BASE_URL:-http://localhost:8080/files}
+    ports:
+      - "8080:8080"
+    volumes:
+      - uploads_data:/deployments/uploads/photos
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: congreats-frontend:latest
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
 volumes:
   congreats_data:
+  uploads_data:

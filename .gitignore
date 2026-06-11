@@ -1,3 +1,6 @@
+# Environment variables (never commit secrets)
+.env
+
 # Compiled class file
 *.class
 
@@ -22,3 +25,13 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
+
+# Maven build output
+backend/target/
+
+# Node modules and frontend build
+frontend/node_modules/
+frontend/dist/
+
+# Local file uploads
+uploads/
