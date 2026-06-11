@@ -1,5 +1,5 @@
 import api from './api'
-import type { ProfileView, PageResult } from '../types'
+import type { ProfileView } from '../types'
 
 export const profileService = {
   async getMe(): Promise<ProfileView> {
