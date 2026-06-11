@@ -27,7 +27,7 @@ public class ProfileRepositoryJPA implements PanacheRepository<ProfileEntity>, P
 
     @Override
     public void update(Profile profile) {
-        ProfileEntity entity = findById(profile.id());
+        ProfileEntity entity = find("id", profile.id()).firstResult();
         if (entity == null) { save(profile); return; }
         entity.bio = profile.bio();
         entity.jobTitle = profile.jobTitle();

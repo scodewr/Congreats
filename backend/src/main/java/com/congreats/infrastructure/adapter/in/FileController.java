@@ -8,7 +8,6 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @Path("/files")
@@ -21,7 +20,7 @@ public class FileController {
     @GET
     @Path("/{filename}")
     public Response serve(@PathParam("filename") String filename) throws IOException {
-        Path file = Paths.get(storagePath).resolve(filename).normalize();
+        java.nio.file.Path file = Paths.get(storagePath).resolve(filename).normalize();
         if (!file.startsWith(Paths.get(storagePath))) {
             return Response.status(Response.Status.FORBIDDEN).build();
         }

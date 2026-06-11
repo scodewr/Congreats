@@ -21,7 +21,7 @@ public class UserRepositoryJPA implements PanacheRepository<UserEntity>, UserRep
 
     @Override
     public void update(User user) {
-        UserEntity entity = (UserEntity) findById((Object) user.id());
+        UserEntity entity = find("id", user.id()).firstResult();
         if (entity != null) {
             entity.name = user.name();
             entity.email = user.email().value();
@@ -32,7 +32,7 @@ public class UserRepositoryJPA implements PanacheRepository<UserEntity>, UserRep
 
     @Override
     public Optional<User> findById(UUID id) {
-        return Optional.ofNullable((UserEntity) findById((Object) id)).map(UserEntity::toDomain);
+        return find("id", id).firstResultOptional().map(UserEntity::toDomain);
     }
 
     @Override
@@ -45,4 +45,8 @@ public class UserRepositoryJPA implements PanacheRepository<UserEntity>, UserRep
         return findAll().page(page, size).list().stream().map(UserEntity::toDomain).toList();
     }
 
+    @Override
+    public long count() {
+        return findAll().count();
+    }
 }

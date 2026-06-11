@@ -8,7 +8,7 @@ import jakarta.ws.rs.ext.Provider;
 import java.util.Map;
 
 @Provider
-public class ExceptionMapper implements ExceptionMapper<DomainException> {
+public class DomainExceptionMapper implements ExceptionMapper<DomainException> {
 
     @Override
     public Response toResponse(DomainException e) {

@@ -20,6 +20,6 @@ public class CategoryRepositoryJPA implements PanacheRepository<CategoryEntity>,
 
     @Override
     public Optional<Category> findById(UUID id) {
-        return Optional.ofNullable((CategoryEntity) findById((Object) id)).map(CategoryEntity::toDomain);
+        return find("id", id).firstResultOptional().map(CategoryEntity::toDomain);
     }
 }

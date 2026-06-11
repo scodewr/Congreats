@@ -38,11 +38,6 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy-reactive-jackson</artifactId>
     </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-resteasy-reactive-multipart</artifactId>
-    </dependency>
-
     <!-- Persistence -->
     <dependency>
       <groupId>io.quarkus</groupId>
