@@ -1,0 +1,82 @@
+export interface AuthTokens {
+  accessToken: string
+  refreshToken: string
+  expiresIn: number
+}
+
+export interface User {
+  id: string
+  name: string
+  email: string
+  role: 'ADMIN' | 'PROFESSIONAL'
+}
+
+export interface ProfileProject {
+  id?: string
+  name: string
+  description?: string
+  status: 'ACTIVE' | 'PAST'
+  startedAt?: string
+  endedAt?: string
+}
+
+export interface ProfileTeam {
+  id?: string
+  name: string
+  role?: string
+}
+
+export interface RecognizedSkill {
+  skill: string
+  count: number
+}
+
+export interface ProfileView {
+  userId: string
+  name: string
+  email: string
+  bio?: string
+  jobTitle?: string
+  company?: string
+  photoUrl?: string
+  projects: ProfileProject[]
+  teams: ProfileTeam[]
+  topSkills: RecognizedSkill[]
+  totalRecognitions: number
+}
+
+export interface CategoryRef {
+  id: string
+  name: string
+}
+
+export interface PersonRef {
+  userId: string
+  name: string
+  photoUrl?: string
+}
+
+export interface RecognitionView {
+  id: string
+  recognizer: PersonRef
+  recognized: PersonRef
+  category: CategoryRef
+  skills: string[]
+  testimonial: string
+  createdAt: string
+}
+
+export interface PageResult<T> {
+  content: T[]
+  total: number
+  page: number
+  size: number
+  hasNext: boolean
+}
+
+export interface Category {
+  id: string
+  name: string
+  description?: string
+  suggestedSkills: string[]
+}

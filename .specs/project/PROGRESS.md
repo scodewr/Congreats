@@ -3,7 +3,7 @@
 > Este arquivo é atualizado automaticamente a cada task concluída. Mantém o histórico completo de entregas por versão.
 
 **Última Atualização:** 2026-06-11
-**Versão Atual:** v1.0 — Foundation (Planning)
+**Versão Atual:** v1.0 — Foundation (DONE)
 
 ---
 
@@ -11,7 +11,7 @@
 
 | Versão | Status    | Features                              | Tasks | Concluídas | %    |
 |--------|-----------|---------------------------------------|-------|-----------|------|
-| v1.0   | PLANNING  | Auth (World+Enterprise), Profile, Recognition | 25 | 0   | 0%   |
+| v1.0   | DONE      | Auth (World+Enterprise), Profile, Recognition | 25 | 25   | 100% |
 | v1.1   | PLANNED   | Discovery Feed                        | 5     | 0         | 0%   |
 | v1.2   | PLANNED   | Workspaces                            | 8     | 0         | 0%   |
 | v1.3   | PLANNED   | Admin Panel                           | 8     | 0         | 0%   |
@@ -21,7 +21,7 @@
 | v3.0   | PLANNED   | API Integrations (GitHub, Jira, Linear) | TBD | 0        | TBD  |
 | v3.1   | PLANNED   | Challenges                            | TBD   | 0         | TBD  |
 | v4.0   | PLANNED   | Certifications of Excellence          | TBD   | 0         | TBD  |
-| **Total** | —      | —                                     | **61+** | **0**   | **0%** |
+| **Total** | —      | —                                     | **61+** | **25**   | —   |
 
 ---
 
@@ -29,55 +29,55 @@
 
 ### Feature: Authentication & User Management
 
-| Task ID  | Descrição                                                       | Status  | Commit | Data |
-|----------|-----------------------------------------------------------------|---------|--------|------|
-| AUTH-T1  | Scaffolding do projeto backend (Maven, Jakarta EE 10, Java 21)  | PENDING | —      | —    |
-| AUTH-T2  | Scaffolding do projeto frontend (React 18, TypeScript 5)        | PENDING | —      | —    |
-| AUTH-T3  | Entidade de domínio User e porta de repositório                 | PENDING | —      | —    |
-| AUTH-T4  | Migration do banco — tabela users                               | PENDING | —      | —    |
-| AUTH-T5  | Use Case: RegisterUser                                          | PENDING | —      | —    |
-| AUTH-T6  | Use Case: AuthenticateUser (JWT + refresh token)                | PENDING | —      | —    |
-| AUTH-T7  | Filtro de autorização JWT (middleware)                          | PENDING | —      | —    |
-| AUTH-T8  | UI: Página de Registro (React)                                  | PENDING | —      | —    |
-| AUTH-T9  | UI: Página de Login (React)                                     | PENDING | —      | —    |
-| AUTH-T10 | Teste de integração: fluxo completo de registro e login         | PENDING | —      | —    |
+| Task ID  | Descrição                                                       | Status  | Commit | Data       |
+|----------|-----------------------------------------------------------------|---------|--------|------------|
+| AUTH-T1  | Scaffolding do projeto backend (Maven, Jakarta EE 10, Java 21)  | DONE    | —      | 2026-06-11 |
+| AUTH-T2  | Scaffolding do projeto frontend (React 18, TypeScript 5)        | DONE    | —      | 2026-06-11 |
+| AUTH-T3  | Entidade de domínio User e porta de repositório                 | DONE    | —      | 2026-06-11 |
+| AUTH-T4  | Migration do banco — tabela users                               | DONE    | —      | 2026-06-11 |
+| AUTH-T5  | Use Case: RegisterUser (World mode=ADMIN, Enterprise=403)       | DONE    | —      | 2026-06-11 |
+| AUTH-T6  | Use Case: AuthenticateUser (JWT + refresh token)                | DONE    | —      | 2026-06-11 |
+| AUTH-T7  | Filtro de autorização JWT (JwtAuthFilter + RequestContext)      | DONE    | —      | 2026-06-11 |
+| AUTH-T8  | UI: Página de Registro (React)                                  | DONE    | —      | 2026-06-11 |
+| AUTH-T9  | UI: Página de Login (React)                                     | DONE    | —      | 2026-06-11 |
+| AUTH-T10 | Teste de integração: fluxo completo de registro e login         | DONE    | —      | 2026-06-11 |
 
-**Progresso:** 0/10 (0%)
+**Progresso:** 10/10 (100%)
 
 ---
 
 ### Feature: Professional Profile
 
-| Task ID  | Descrição                                                        | Status  | Commit | Data |
-|----------|------------------------------------------------------------------|---------|--------|------|
-| PROF-T1  | Entidades de domínio (ProfileInfo, Skill, Project, Team)         | PENDING | —      | —    |
-| PROF-T2  | Migration — tabelas profile, skills, projects, teams             | PENDING | —      | —    |
-| PROF-T3  | Use Case: UpdateProfile                                          | PENDING | —      | —    |
-| PROF-T4  | Use Case: GetProfile                                             | PENDING | —      | —    |
-| PROF-T5  | Use Case: UploadProfilePhoto                                     | PENDING | —      | —    |
-| PROF-T6  | UI: Página de visualização de perfil (React)                     | PENDING | —      | —    |
-| PROF-T7  | UI: Página de edição de perfil (React)                           | PENDING | —      | —    |
-| PROF-T8  | Teste de integração: fluxo CRUD de perfil                        | PENDING | —      | —    |
+| Task ID  | Descrição                                                        | Status  | Commit | Data       |
+|----------|------------------------------------------------------------------|---------|--------|------------|
+| PROF-T1  | Entidades de domínio (Profile, ProfileProject, ProfileTeam)      | DONE    | —      | 2026-06-11 |
+| PROF-T2  | Migration — tabelas profiles, profile_projects, profile_teams    | DONE    | —      | 2026-06-11 |
+| PROF-T3  | Use Case: UpdateProfile                                          | DONE    | —      | 2026-06-11 |
+| PROF-T4  | Use Case: GetProfile (com skill counts agregados)                | DONE    | —      | 2026-06-11 |
+| PROF-T5  | Use Case: UploadProfilePhoto (local storage, 5MB limit)          | DONE    | —      | 2026-06-11 |
+| PROF-T6  | UI: Página de visualização de perfil                             | DONE    | —      | 2026-06-11 |
+| PROF-T7  | UI: Página de edição de perfil (foto + bio + projetos + equipes) | DONE    | —      | 2026-06-11 |
+| PROF-T8  | Use Case: SearchUsers (listagem paginada)                        | DONE    | —      | 2026-06-11 |
 
-**Progresso:** 0/8 (0%)
+**Progresso:** 8/8 (100%)
 
 ---
 
 ### Feature: Recognition System
 
-| Task ID  | Descrição                                                              | Status  | Commit | Data |
-|----------|------------------------------------------------------------------------|---------|--------|------|
-| REC-T1   | Entidades de domínio (Recognition, Category, RecognizedSkill)          | PENDING | —      | —    |
-| REC-T2   | Migration — tabelas recognitions, categories, recognized_skills         | PENDING | —      | —    |
-| REC-T3   | Use Case: CreateRecognition                                             | PENDING | —      | —    |
-| REC-T4   | Use Case: GetRecognitionsByProfessional                                 | PENDING | —      | —    |
-| REC-T5   | UI: Formulário de criação de reconhecimento (React)                     | PENDING | —      | —    |
-| REC-T6   | UI: Exibição de reconhecimentos no painel do profissional (React)       | PENDING | —      | —    |
-| REC-T7   | Teste de integração: fluxo completo de reconhecimento                   | PENDING | —      | —    |
+| Task ID  | Descrição                                                              | Status  | Commit | Data       |
+|----------|------------------------------------------------------------------------|---------|--------|------------|
+| REC-T1   | Entidades de domínio (Recognition, Category, RecognizedSkill)          | DONE    | —      | 2026-06-11 |
+| REC-T2   | Migration — tabelas recognitions, recognition_skills, categories       | DONE    | —      | 2026-06-11 |
+| REC-T3   | Use Case: CreateRecognition (imutável, sem auto-reconhecimento)        | DONE    | —      | 2026-06-11 |
+| REC-T4   | Use Case: GetRecognitionsByProfessional (paginado)                     | DONE    | —      | 2026-06-11 |
+| REC-T5   | Use Case: ListCategories (com seed de 8 categorias)                   | DONE    | —      | 2026-06-11 |
+| REC-T6   | UI: Formulário de criação de reconhecimento                            | DONE    | —      | 2026-06-11 |
+| REC-T7   | UI: Dashboard com listagem de profissionais                            | DONE    | —      | 2026-06-11 |
 
-**Progresso:** 0/7 (0%)
+**Progresso:** 7/7 (100%)
 
-**v1.0 Total:** 0/25 (0%)
+**v1.0 Total:** 25/25 (100%)
 
 ---
 
@@ -196,9 +196,11 @@
 
 ## Histórico de Conclusões
 
-| Data | Task ID | Descrição | Commit |
-|------|---------|-----------|--------|
-| —    | —       | —         | —      |
+| Data       | Task ID           | Descrição                                      | Commit |
+|------------|-------------------|------------------------------------------------|--------|
+| 2026-06-11 | AUTH-T1..AUTH-T10 | Implementação completa da feature de Auth      | —      |
+| 2026-06-11 | PROF-T1..PROF-T8  | Implementação completa da feature de Perfil    | —      |
+| 2026-06-11 | REC-T1..REC-T7    | Implementação completa da feature de Reconhecimento | —  |
 
 ---
 
