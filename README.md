@@ -33,25 +33,95 @@ O modo é definido pela variável de ambiente `CONGREATS_MODE` (`WORLD` ou `ENTE
 
 ## Pré-requisitos
 
-- Java 21+
-- Maven 3.9+ (ou use o wrapper `./mvnw` se disponível)
-- Node.js 20+ e npm
-- Docker e Docker Compose
+- Docker 24+ e Docker Compose v2+
+- Java 21+ *(apenas para desenvolvimento local sem Docker)*
+- Maven 3.9+ *(apenas para desenvolvimento local sem Docker)*
+- Node.js 20+ e npm *(apenas para desenvolvimento local sem Docker)*
 
 ---
 
-## Rodando Localmente
+## Configuração Inicial
 
-### Opção A — Stack completa com Docker
-
-Sobe PostgreSQL + backend + frontend em um único comando:
+Antes de qualquer forma de execução, copie o arquivo de variáveis de ambiente e ajuste os valores sensíveis:
 
 ```bash
-# Copie o arquivo de variáveis de ambiente (ajuste os valores sensíveis)
 cp .env.example .env
+```
 
+Edite o `.env` e substitua pelo menos o segredo JWT:
+
+```env
+CONGREATS_JWT_SECRET=seu-segredo-longo-e-aleatorio-aqui
+```
+
+---
+
+## Build das Imagens Docker
+
+As imagens são construídas a partir de Dockerfiles multi-stage — nenhum pré-requisito local é necessário além do Docker.
+
+### Backend
+
+```bash
+docker build \
+  -t congreats-backend:latest \
+  -f backend/src/main/docker/Dockerfile.jvm \
+  ./backend
+```
+
+O build acontece em dois estágios:
+1. `maven:3.9-eclipse-temurin-21` — compila o projeto e empacota o fast-jar
+2. `eclipse-temurin:21-jre` — imagem de runtime enxuta com apenas o JRE
+
+### Frontend
+
+```bash
+docker build \
+  -t congreats-frontend:latest \
+  ./frontend
+```
+
+O build acontece em dois estágios:
+1. `node:20-alpine` — instala dependências e gera os assets estáticos com `npm run build`
+2. `nginx:1.27-alpine` — serve os assets e faz proxy `/api/` → backend
+
+### Ambos de uma vez
+
+```bash
+docker-compose build
+```
+
+---
+
+## Subindo o Sistema
+
+### Primeira execução (build + start)
+
+```bash
 docker-compose up --build
 ```
+
+### Execuções seguintes (sem rebuild)
+
+```bash
+docker-compose up -d
+```
+
+### Parar o sistema
+
+```bash
+docker-compose down
+```
+
+Para remover também os volumes (apaga dados do banco e uploads):
+
+```bash
+docker-compose down -v
+```
+
+---
+
+## URLs após subir o sistema
 
 | Serviço | URL |
 |---------|-----|
@@ -61,17 +131,31 @@ docker-compose up --build
 
 ---
 
-### Opção B — Desenvolvimento local
+## Variáveis de Ambiente
 
-#### 1. Banco de dados
+Todas as variáveis usam o prefixo `CONGREATS_`. Os valores padrão são suficientes para desenvolvimento local; **substitua `CONGREATS_JWT_SECRET` em produção**.
+
+| Variável | Padrão | Descrição |
+|----------|--------|-----------|
+| `CONGREATS_DB_URL` | `jdbc:postgresql://postgres:5432/congreats` | URL JDBC do banco |
+| `CONGREATS_DB_USER` | `congreats` | Usuário do banco |
+| `CONGREATS_DB_PASSWORD` | `congreats` | Senha do banco |
+| `CONGREATS_JWT_SECRET` | `change-me-in-production` | Segredo HMAC256 — **troque em produção** |
+| `CONGREATS_MODE` | `WORLD` | Modo de operação (`WORLD` ou `ENTERPRISE`) |
+| `CONGREATS_STORAGE_PATH` | `/deployments/uploads/photos` | Diretório interno para fotos |
+| `CONGREATS_STORAGE_BASE_URL` | `http://localhost:8080/files` | URL base para servir fotos |
+
+---
+
+## Desenvolvimento Local (sem Docker para app)
+
+Para iteração rápida com hot reload, suba apenas o banco via Docker e rode o backend e frontend diretamente na máquina.
+
+### 1. Banco de dados
 
 ```bash
 docker-compose up -d postgres
 ```
-
-Sobe um PostgreSQL 16 na porta `5432` com banco `congreats`, usuário `congreats`, senha `congreats`.
-
----
 
 ### 2. Backend
 
@@ -80,25 +164,7 @@ cd backend
 mvn quarkus:dev
 ```
 
-O servidor sobe em `http://localhost:8080`.
-
-O Quarkus em modo dev aplica as migrations do Flyway automaticamente e recompila em hot reload.
-
-**Variáveis de ambiente disponíveis:**
-
-| Variável | Padrão | Descrição |
-|----------|--------|-----------|
-| `CONGREATS_DB_URL` | `jdbc:postgresql://localhost:5432/congreats` | URL do banco |
-| `CONGREATS_DB_USER` | `congreats` | Usuário do banco |
-| `CONGREATS_DB_PASSWORD` | `congreats` | Senha do banco |
-| `CONGREATS_JWT_SECRET` | `change-me-in-production` | Segredo HMAC256 do JWT |
-| `CONGREATS_MODE` | `WORLD` | Modo de operação (`WORLD` ou `ENTERPRISE`) |
-| `CONGREATS_STORAGE_PATH` | `./uploads/photos` | Diretório local para fotos |
-| `CONGREATS_STORAGE_BASE_URL` | `http://localhost:8080/files` | URL base para servir fotos |
-
-Para sobrescrever em desenvolvimento, crie um arquivo `backend/src/main/resources/.env` ou exporte as variáveis no shell antes de subir.
-
----
+O Quarkus sobe em `http://localhost:8080`, aplica as migrations automaticamente e recompila em hot reload.
 
 ### 3. Frontend
 
@@ -108,7 +174,19 @@ npm install
 npm run dev
 ```
 
-A aplicação sobe em `http://localhost:5173`. Requisições para `/api/*` são proxiadas automaticamente para o backend em `localhost:8080`.
+A aplicação sobe em `http://localhost:5173`. Requisições para `/api/*` são proxiadas automaticamente para `localhost:8080`.
+
+---
+
+## Testes
+
+```bash
+# Unitários (sem banco, sem Docker)
+cd backend && mvn test
+
+# Integração (Quarkus Dev Services sobe um PostgreSQL via Docker automaticamente)
+cd backend && mvn verify -DskipITs=false
+```
 
 ---
 
@@ -116,27 +194,31 @@ A aplicação sobe em `http://localhost:5173`. Requisições para `/api/*` são 
 
 ```
 Congreats/
-├── docker-compose.yml              # PostgreSQL para desenvolvimento
-├── backend/                        # Quarkus (Java 21)
+├── .env.example                        # Variáveis de ambiente (template)
+├── docker-compose.yml                  # Orquestra postgres + backend + frontend
+├── backend/                            # Quarkus (Java 21)
 │   ├── pom.xml
 │   └── src/
 │       ├── main/
+│       │   ├── docker/Dockerfile.jvm   # Imagem multi-stage (build + runtime JRE)
 │       │   ├── java/com/congreats/
-│       │   │   ├── domain/         # Entidades, Value Objects, exceções
-│       │   │   ├── application/    # Use Cases, Ports (in/out), DTOs
-│       │   │   └── infrastructure/ # JPA Entities, Controllers, Adapters, Config
+│       │   │   ├── domain/             # Entidades, Value Objects, exceções
+│       │   │   ├── application/        # Use Cases, Ports (in/out), DTOs
+│       │   │   └── infrastructure/     # JPA Entities, Controllers, Adapters, Config
 │       │   └── resources/
 │       │       ├── application.properties
-│       │       └── db/migration/   # Flyway (V001–V005)
+│       │       └── db/migration/       # Flyway V001–V005
 │       └── test/
-│           ├── domain/             # Testes unitários de domínio
-│           └── integration/        # Testes de integração (Quarkus Dev Services)
-└── frontend/                       # React 18 + TypeScript
+│           ├── domain/                 # Testes unitários
+│           └── integration/            # Testes de integração (Dev Services)
+└── frontend/                           # React 18 + TypeScript
+    ├── Dockerfile                      # Imagem multi-stage (build + nginx)
+    ├── nginx.conf                      # SPA fallback + proxy /api/ → backend
     └── src/
-        ├── contexts/               # AuthContext
-        ├── pages/                  # Login, Register, Dashboard, Profile, etc.
-        ├── services/               # authService, profileService, recognitionService
-        └── types/                  # Tipos TypeScript
+        ├── contexts/                   # AuthContext (JWT + refresh token)
+        ├── pages/                      # Login, Register, Dashboard, Profile, etc.
+        ├── services/                   # authService, profileService, recognitionService
+        └── types/                      # Tipos TypeScript
 ```
 
 ### Arquitetura Backend
@@ -189,18 +271,6 @@ Hexagonal adaptada com DDD Tático:
 | Método | Path | Descrição | Auth |
 |--------|------|-----------|------|
 | `GET` | `/files/{filename}` | Servir foto de perfil | Não |
-
----
-
-## Rodando os Testes
-
-```bash
-# Testes unitários (sem banco)
-cd backend && mvn test
-
-# Testes de integração (requer Docker — Quarkus Dev Services sobe o banco automaticamente)
-cd backend && mvn verify -DskipITs=false
-```
 
 ---
 
