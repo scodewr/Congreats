@@ -17,6 +17,9 @@ export default function Navbar() {
           Congreats
         </Link>
         <nav className="flex items-center gap-4">
+          <Link to="/discovery" className="text-sm text-gray-600 hover:text-primary-600">
+            Descobrir
+          </Link>
           <Link to="/recognitions/new" className="text-sm text-gray-600 hover:text-primary-600">
             Reconhecer
           </Link>
