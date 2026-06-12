@@ -12,4 +12,8 @@ public interface RecognitionRepository {
     List<Recognition> findByRecognizerId(UUID userId, int page, int size);
     long countByRecognizedId(UUID userId);
     Map<String, Long> countSkillsByRecognizedId(UUID userId);
+    List<Recognition> findRecent(int page, int size);
+    long countAll();
+    List<UUID> findTopRecognizedIds(int page, int size);
+    long countDistinctRecognized();
 }

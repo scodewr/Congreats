@@ -56,4 +56,32 @@ public class RecognitionRepositoryJPA implements PanacheRepository<RecognitionEn
         }
         return result;
     }
+
+    @Override
+    public List<Recognition> findRecent(int page, int size) {
+        return findAll(io.quarkus.panache.common.Sort.by("createdAt", io.quarkus.panache.common.Sort.Direction.Descending))
+                .page(page, size).list().stream().map(RecognitionEntity::toDomain).toList();
+    }
+
+    @Override
+    public long countAll() {
+        return count();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<UUID> findTopRecognizedIds(int page, int size) {
+        return em.createQuery(
+                "SELECT r.recognizedId FROM RecognitionEntity r GROUP BY r.recognizedId ORDER BY COUNT(r.id) DESC")
+                .setFirstResult(page * size)
+                .setMaxResults(size)
+                .getResultList();
+    }
+
+    @Override
+    public long countDistinctRecognized() {
+        return (long) em.createQuery(
+                "SELECT COUNT(DISTINCT r.recognizedId) FROM RecognitionEntity r")
+                .getSingleResult();
+    }
 }
