@@ -21,17 +21,21 @@ export default function CreateRecognitionPage() {
   const [testimonial, setTestimonial] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [loadingProfessionals, setLoadingProfessionals] = useState(true)
 
   useEffect(() => {
-    Promise.all([
-      profileService.search(0, 100),
-      recognitionService.listCategories(),
-      workspaceService.listMine(),
-    ]).then(([p, c, w]) => {
-      setProfessionals(p.filter((prof) => prof.userId !== user?.id))
-      setCategories(c)
-      setWorkspaces(w)
-    })
+    profileService.search(0, 200)
+      .then((p) => setProfessionals(p.filter((prof) => prof.userId !== user?.id)))
+      .catch(() => setProfessionals([]))
+      .finally(() => setLoadingProfessionals(false))
+
+    recognitionService.listCategories()
+      .then(setCategories)
+      .catch(() => setCategories([]))
+
+    workspaceService.listMine()
+      .then(setWorkspaces)
+      .catch(() => setWorkspaces([]))
   }, [user])
 
   const selectedCategory = categories.find((c) => c.id === categoryId)
@@ -87,13 +91,23 @@ export default function CreateRecognitionPage() {
           {/* Professional */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Profissional *</label>
-            <select value={recognizedId} onChange={(e) => setRecognizedId(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">
-              <option value="">Selecione...</option>
-              {professionals.map((p) => (
-                <option key={p.userId} value={p.userId}>{p.name}{p.jobTitle ? ` — ${p.jobTitle}` : ''}</option>
-              ))}
-            </select>
+            {loadingProfessionals ? (
+              <div className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-400 bg-gray-50">
+                Carregando profissionais…
+              </div>
+            ) : professionals.length === 0 ? (
+              <div className="w-full border border-amber-200 rounded-lg px-3 py-2 text-sm text-amber-700 bg-amber-50">
+                Nenhum outro profissional cadastrado ainda.
+              </div>
+            ) : (
+              <select value={recognizedId} onChange={(e) => setRecognizedId(e.target.value)}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">
+                <option value="">Selecione...</option>
+                {professionals.map((p) => (
+                  <option key={p.userId} value={p.userId}>{p.name}{p.jobTitle ? ` — ${p.jobTitle}` : ''}</option>
+                ))}
+              </select>
+            )}
           </div>
 
           {/* Category */}
