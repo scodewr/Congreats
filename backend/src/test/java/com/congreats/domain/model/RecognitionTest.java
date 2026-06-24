@@ -19,7 +19,7 @@ class RecognitionTest {
     @Test
     void create_validRecognition_succeeds() {
         Recognition r = Recognition.create(RECOGNIZER, RECOGNIZED, CATEGORY,
-                List.of("Java", "Clean Code"), TESTIMONIAL, null, null);
+                List.of("Java", "Clean Code"), TESTIMONIAL, null, null, null);
         assertNotNull(r.id());
         assertEquals(RECOGNIZER, r.recognizerId());
         assertEquals(RECOGNIZED, r.recognizedId());
@@ -30,41 +30,41 @@ class RecognitionTest {
     void selfRecognition_throwsException() {
         assertThrows(SelfRecognitionException.class,
                 () -> Recognition.create(RECOGNIZER, RECOGNIZER, CATEGORY,
-                        List.of("Java"), TESTIMONIAL, null, null));
+                        List.of("Java"), TESTIMONIAL, null, null, null));
     }
 
     @Test
     void emptySkills_throwsException() {
         assertThrows(DomainException.class,
                 () -> Recognition.create(RECOGNIZER, RECOGNIZED, CATEGORY,
-                        List.of(), TESTIMONIAL, null, null));
+                        List.of(), TESTIMONIAL, null, null, null));
     }
 
     @Test
     void shortTestimonial_throwsException() {
         assertThrows(DomainException.class,
                 () -> Recognition.create(RECOGNIZER, RECOGNIZED, CATEGORY,
-                        List.of("Java"), "Muito bom.", null, null));
+                        List.of("Java"), "Muito bom.", null, null, null));
     }
 
     @Test
     void skills_normalizedToTitleCase() {
         Recognition r = Recognition.create(RECOGNIZER, RECOGNIZED, CATEGORY,
-                List.of("java", "CLEAN CODE", "tdd"), TESTIMONIAL, null, null);
+                List.of("java", "CLEAN CODE", "tdd"), TESTIMONIAL, null, null, null);
         assertEquals(List.of("Java", "Clean code", "Tdd"), r.skills());
     }
 
     @Test
     void duplicateSkills_deduplicated() {
         Recognition r = Recognition.create(RECOGNIZER, RECOGNIZED, CATEGORY,
-                List.of("Java", "java", "JAVA"), TESTIMONIAL, null, null);
+                List.of("Java", "java", "JAVA"), TESTIMONIAL, null, null, null);
         assertEquals(1, r.skills().size());
     }
 
     @Test
     void testimonial_isStripped() {
         Recognition r = Recognition.create(RECOGNIZER, RECOGNIZED, CATEGORY,
-                List.of("Java"), "  " + TESTIMONIAL + "  ", null, null);
+                List.of("Java"), "  " + TESTIMONIAL + "  ", null, null, null);
         assertEquals(TESTIMONIAL, r.testimonial());
     }
 }
