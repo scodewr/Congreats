@@ -8,7 +8,7 @@ export interface User {
   id: string
   name: string
   email: string
-  role: 'ADMIN' | 'PROFESSIONAL'
+  role: 'ADMIN' | 'USER'
 }
 
 export interface ProfileProject {
@@ -88,5 +88,47 @@ export interface WorkspaceView {
   ownerId: string
   ownerName: string
   memberCount: number
+  archived: boolean
   createdAt: string
+}
+
+export interface UserAdminView {
+  id: string
+  name: string
+  email: string
+  role: 'ADMIN' | 'USER'
+  active: boolean
+  createdAt: string
+}
+
+export interface CampaignView {
+  id: string
+  name: string
+  description?: string
+  categoryId: string
+  categoryName: string
+  startsAt: string
+  endsAt: string
+  active: boolean
+  createdAt: string
+}
+
+export interface EventRankingEntry {
+  userId: string
+  name: string
+  photoUrl?: string
+  recognitionCount: number
+}
+
+export interface EventView {
+  id: string
+  name: string
+  description?: string
+  categoryId: string
+  categoryName: string
+  startsAt: string
+  endsAt: string
+  active: boolean
+  createdAt: string
+  ranking: EventRankingEntry[]
 }

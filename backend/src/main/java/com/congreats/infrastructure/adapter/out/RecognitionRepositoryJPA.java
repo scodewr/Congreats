@@ -8,6 +8,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.inject.Inject;
 
+import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -94,5 +95,22 @@ public class RecognitionRepositoryJPA implements PanacheRepository<RecognitionEn
         return (long) em.createQuery(
                 "SELECT COUNT(DISTINCT r.recognizedId) FROM RecognitionEntity r")
                 .getSingleResult();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Map<UUID, Long> countByRecognizedForEvent(UUID categoryId, Instant startsAt, Instant endsAt) {
+        List<Object[]> rows = em.createQuery(
+                "SELECT r.recognizedId, COUNT(r.id) FROM RecognitionEntity r " +
+                "WHERE r.categoryId = :cat AND r.createdAt >= :start AND r.createdAt < :end " +
+                "GROUP BY r.recognizedId ORDER BY COUNT(r.id) DESC")
+                .setParameter("cat", categoryId)
+                .setParameter("start", startsAt)
+                .setParameter("end", endsAt)
+                .getResultList();
+
+        Map<UUID, Long> result = new LinkedHashMap<>();
+        for (Object[] row : rows) result.put((UUID) row[0], (Long) row[1]);
+        return result;
     }
 }

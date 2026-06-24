@@ -10,7 +10,11 @@ public interface WorkspaceRepository {
     void save(Workspace workspace);
     Optional<Workspace> findById(UUID id);
     List<Workspace> findByMemberId(UUID userId);
+    List<Workspace> findAll(int page, int size);
+    long countAll();
     boolean isMember(UUID workspaceId, UUID userId);
     void addMember(UUID workspaceId, UUID userId);
+    void removeMember(UUID workspaceId, UUID userId);
     List<UUID> findMemberIds(UUID workspaceId);
+    void archive(UUID workspaceId);
 }

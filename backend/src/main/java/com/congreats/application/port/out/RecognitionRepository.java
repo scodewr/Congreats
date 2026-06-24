@@ -18,4 +18,5 @@ public interface RecognitionRepository {
     long countByWorkspaceId(UUID workspaceId);
     List<UUID> findTopRecognizedIds(int page, int size);
     long countDistinctRecognized();
+    Map<UUID, Long> countByRecognizedForEvent(UUID categoryId, java.time.Instant startsAt, java.time.Instant endsAt);
 }

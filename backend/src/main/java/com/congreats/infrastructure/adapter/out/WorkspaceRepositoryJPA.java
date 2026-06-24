@@ -30,6 +30,16 @@ public class WorkspaceRepositoryJPA implements PanacheRepository<WorkspaceEntity
     }
 
     @Override
+    public List<Workspace> findAll(int page, int size) {
+        return findAll().page(page, size).list().stream().map(WorkspaceEntity::toDomain).toList();
+    }
+
+    @Override
+    public long countAll() {
+        return count();
+    }
+
+    @Override
     public boolean isMember(UUID workspaceId, UUID userId) {
         return find("id = ?1 and ?2 member of memberIds", workspaceId, userId).count() > 0;
     }
@@ -45,9 +55,20 @@ public class WorkspaceRepositoryJPA implements PanacheRepository<WorkspaceEntity
     }
 
     @Override
+    public void removeMember(UUID workspaceId, UUID userId) {
+        find("id", workspaceId).firstResultOptional()
+                .ifPresent(ws -> ws.memberIds.remove(userId));
+    }
+
+    @Override
     public List<UUID> findMemberIds(UUID workspaceId) {
         return find("id", workspaceId).firstResultOptional()
                 .map(ws -> List.copyOf(ws.memberIds))
                 .orElse(List.of());
+    }
+
+    @Override
+    public void archive(UUID workspaceId) {
+        update("archived = true where id = ?1", workspaceId);
     }
 }

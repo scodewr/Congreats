@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { discoveryService } from '../services/discoveryService'
-import type { PageResult, ProfileView, RecognitionView } from '../types'
+import { adminService } from '../services/adminService'
+import type { CampaignView, PageResult, ProfileView, RecognitionView } from '../types'
 
 type Tab = 'feed' | 'ranking'
 
@@ -9,7 +10,12 @@ export default function DiscoveryPage() {
   const [tab, setTab] = useState<Tab>('feed')
   const [feed, setFeed] = useState<PageResult<RecognitionView> | null>(null)
   const [ranking, setRanking] = useState<PageResult<ProfileView> | null>(null)
+  const [campaigns, setCampaigns] = useState<CampaignView[]>([])
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    adminService.getActiveCampaigns().then(setCampaigns).catch(() => {})
+  }, [])
 
   useEffect(() => {
     setLoading(true)
@@ -29,6 +35,27 @@ export default function DiscoveryPage() {
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Descobrir</h1>
       </div>
+
+      {campaigns.length > 0 && (
+        <div className="mb-6 rounded-xl border border-primary-200 bg-primary-50 p-4">
+          <p className="text-xs font-semibold text-primary-600 uppercase tracking-wide mb-1">Campanha ativa</p>
+          {campaigns.map((c) => (
+            <div key={c.id} className="flex items-start justify-between">
+              <div>
+                <p className="font-semibold text-primary-800">{c.name}</p>
+                {c.description && <p className="text-sm text-primary-700 mt-0.5">{c.description}</p>}
+                <p className="text-xs text-primary-600 mt-1">
+                  Categoria: {c.categoryName} · até {new Date(c.endsAt).toLocaleDateString('pt-BR')}
+                </p>
+              </div>
+              <Link to="/recognitions/new"
+                className="flex-shrink-0 bg-primary-600 text-white text-sm px-3 py-1.5 rounded-lg hover:bg-primary-700">
+                Reconhecer
+              </Link>
+            </div>
+          ))}
+        </div>
+      )}
 
       <div className="flex gap-1 mb-6 border-b border-gray-200">
         <TabButton active={tab === 'feed'} onClick={() => setTab('feed')}>Feed</TabButton>

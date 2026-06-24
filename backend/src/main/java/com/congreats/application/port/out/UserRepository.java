@@ -14,4 +14,5 @@ public interface UserRepository {
     Optional<User> findByEmail(Email email);
     List<User> findAll(int page, int size);
     long count();
+    long countActiveAdmins();
 }

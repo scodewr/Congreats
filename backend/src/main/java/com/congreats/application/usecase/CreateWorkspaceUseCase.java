@@ -33,6 +33,6 @@ public class CreateWorkspaceUseCase {
         workspaceRepository.addMember(workspace.id(), cmd.ownerId());
 
         return new WorkspaceView(workspace.id(), workspace.name(), workspace.description(),
-                workspace.ownerId(), ownerName, 1, workspace.createdAt());
+                workspace.ownerId(), ownerName, 1, false, workspace.createdAt());
     }
 }

@@ -24,7 +24,9 @@ public class JwtAuthFilter implements ContainerRequestFilter {
     public void filter(ContainerRequestContext ctx) {
         String path = ctx.getUriInfo().getPath();
 
-        if (path.startsWith("auth/") || path.startsWith("/auth/") || path.equals("/files") || path.startsWith("/files/")) {
+        if (path.startsWith("auth/") || path.startsWith("/auth/")
+                || path.equals("/files") || path.startsWith("/files/")
+                || path.equals("/campaigns/active") || path.startsWith("/events/") && path.endsWith("/ranking")) {
             return;
         }
 
@@ -37,7 +39,9 @@ public class JwtAuthFilter implements ContainerRequestFilter {
 
         try {
             String token = header.substring(BEARER_PREFIX.length());
-            requestContext.setUserId(tokenService.validateAccessToken(token));
+            var claims = tokenService.validateAndGetClaims(token);
+            requestContext.setUserId(claims.userId());
+            requestContext.setRole(claims.role());
         } catch (InvalidTokenException e) {
             ctx.abortWith(Response.status(Response.Status.UNAUTHORIZED)
                     .entity("{\"error\":\"Token inválido ou expirado\"}").build());

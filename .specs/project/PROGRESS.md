@@ -3,7 +3,7 @@
 > Este arquivo é atualizado automaticamente a cada task concluída. Mantém o histórico completo de entregas por versão.
 
 **Última Atualização:** 2026-06-23
-**Versão Atual:** v1.2 — Workspaces (DONE)
+**Versão Atual:** v1.3 — Administration (DONE)
 
 ---
 
@@ -14,14 +14,14 @@
 | v1.0   | DONE      | Auth (World+Enterprise), Profile, Recognition | 25 | 25   | 100% |
 | v1.1   | DONE      | Discovery Feed + Ranking              | 5     | 5         | 100% |
 | v1.2   | DONE      | Workspaces                            | 8     | 8         | 100% |
-| v1.3   | PLANNED   | Admin Panel                           | 8     | 0         | 0%   |
+| v1.3   | DONE      | Admin Panel                           | 8     | 8         | 100% |
 | v2.0   | PLANNED   | Medals & Trophies                     | 7     | 0         | 0%   |
 | v2.1   | PLANNED   | Skill Validation                      | 8     | 0         | 0%   |
 | v2.2   | PLANNED   | Notifications (Email, WhatsApp, SMS)  | TBD   | 0         | TBD  |
 | v3.0   | PLANNED   | API Integrations (GitHub, Jira, Linear) | TBD | 0        | TBD  |
 | v3.1   | PLANNED   | Challenges                            | TBD   | 0         | TBD  |
 | v4.0   | PLANNED   | Certifications of Excellence          | TBD   | 0         | TBD  |
-| **Total** | —      | —                                     | **61+** | **38**   | —   |
+| **Total** | —      | —                                     | **61+** | **46**   | —   |
 
 ---
 
@@ -124,20 +124,20 @@
 
 ### Feature: Admin Panel
 
-| Task ID  | Descrição                                                            | Status  | Commit | Data |
-|----------|----------------------------------------------------------------------|---------|--------|------|
-| ADM-T1   | Use Cases: Gestão de usuários (criar, editar, desativar)             | PENDING | —      | —    |
-| ADM-T2   | Use Cases: Gestão de workspaces (admin)                              | PENDING | —      | —    |
-| ADM-T3   | Use Case: CreateCampaign                                             | PENDING | —      | —    |
-| ADM-T4   | Use Cases: CreateEvent / CreateChampionship                          | PENDING | —      | —    |
-| ADM-T5   | UI: Gestão de usuários — painel admin (React)                        | PENDING | —      | —    |
-| ADM-T6   | UI: Gestão de workspaces — painel admin (React)                      | PENDING | —      | —    |
-| ADM-T7   | UI: Gestão de campanhas, eventos e campeonatos (React)               | PENDING | —      | —    |
-| ADM-T8   | Teste de integração: operações administrativas                       | PENDING | —      | —    |
+| Task ID  | Descrição                                                            | Status  | Commit | Data       |
+|----------|----------------------------------------------------------------------|---------|--------|------------|
+| ADM-T1   | Use Cases: Gestão de usuários (criar, editar, desativar)             | DONE    | —      | 2026-06-23 |
+| ADM-T2   | Use Cases: Gestão de workspaces (admin) + campo archived             | DONE    | —      | 2026-06-23 |
+| ADM-T3   | Use Case: CreateCampaign + GetActiveCampaigns                        | DONE    | —      | 2026-06-23 |
+| ADM-T4   | Use Cases: CreateEvent + GetEventRanking                             | DONE    | —      | 2026-06-23 |
+| ADM-T5   | UI: Gestão de usuários — painel admin (React)                        | DONE    | —      | 2026-06-23 |
+| ADM-T6   | UI: Gestão de workspaces — painel admin (React)                      | DONE    | —      | 2026-06-23 |
+| ADM-T7   | UI: Campanhas e Eventos + CampaignBanner no Discovery (React)        | DONE    | —      | 2026-06-23 |
+| ADM-T8   | Role enforcement (RequestContext + validateAndGetClaims)             | DONE    | —      | 2026-06-23 |
 
-**Progresso:** 0/8 (0%)
+**Progresso:** 8/8 (100%)
 
-**v1.3 Total:** 0/8 (0%)
+**v1.3 Total:** 8/8 (100%)
 
 ---
 
@@ -202,7 +202,8 @@
 | 2026-06-11 | PROF-T1..PROF-T8    | Implementação completa da feature de Perfil            | —       |
 | 2026-06-11 | REC-T1..REC-T7      | Implementação completa da feature de Reconhecimento    | —       |
 | 2026-06-11 | FEED-T1..FEED-T5    | Discovery Feed + Professional Ranking                  | 346cc89 |
-| 2026-06-23 | WS-T1..WS-T8        | Workspaces — CRUD, membros, feed filtrado              | —       |
+| 2026-06-23 | WS-T1..WS-T8        | Workspaces — CRUD, membros, feed filtrado              | a395398 |
+| 2026-06-23 | ADM-T1..ADM-T8      | Admin Panel — usuários, workspaces, campanhas, eventos | —       |
 
 ---
 

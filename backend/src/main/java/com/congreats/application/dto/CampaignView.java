@@ -3,13 +3,14 @@ package com.congreats.application.dto;
 import java.time.Instant;
 import java.util.UUID;
 
-public record WorkspaceView(
+public record CampaignView(
         UUID id,
         String name,
         String description,
-        UUID ownerId,
-        String ownerName,
-        int memberCount,
-        boolean archived,
+        UUID categoryId,
+        String categoryName,
+        Instant startsAt,
+        Instant endsAt,
+        boolean active,
         Instant createdAt
 ) {}

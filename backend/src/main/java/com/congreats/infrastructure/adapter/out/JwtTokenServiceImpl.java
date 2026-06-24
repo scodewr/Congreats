@@ -3,9 +3,12 @@ package com.congreats.infrastructure.adapter.out;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.congreats.application.dto.TokenClaims;
 import com.congreats.application.port.out.TokenService;
 import com.congreats.domain.exception.InvalidTokenException;
 import com.congreats.domain.model.User;
+import com.congreats.domain.model.UserRole;
 import com.congreats.infrastructure.entity.RefreshTokenEntity;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -72,8 +75,20 @@ public class JwtTokenServiceImpl implements PanacheRepository<RefreshTokenEntity
     @Override
     public UUID validateAccessToken(String token) {
         try {
-            var decoded = JWT.require(algorithm()).withIssuer(issuer).build().verify(token);
+            DecodedJWT decoded = JWT.require(algorithm()).withIssuer(issuer).build().verify(token);
             return UUID.fromString(decoded.getSubject());
+        } catch (JWTVerificationException | IllegalArgumentException e) {
+            throw new InvalidTokenException();
+        }
+    }
+
+    @Override
+    public TokenClaims validateAndGetClaims(String token) {
+        try {
+            DecodedJWT decoded = JWT.require(algorithm()).withIssuer(issuer).build().verify(token);
+            UUID userId = UUID.fromString(decoded.getSubject());
+            UserRole role = UserRole.valueOf(decoded.getClaim("role").asString());
+            return new TokenClaims(userId, role);
         } catch (JWTVerificationException | IllegalArgumentException e) {
             throw new InvalidTokenException();
         }

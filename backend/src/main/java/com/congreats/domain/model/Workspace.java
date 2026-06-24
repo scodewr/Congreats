@@ -8,9 +8,10 @@ public record Workspace(
         String name,
         String description,
         UUID ownerId,
+        boolean archived,
         Instant createdAt
 ) {
     public static Workspace create(String name, String description, UUID ownerId) {
-        return new Workspace(UUID.randomUUID(), name, description, ownerId, Instant.now());
+        return new Workspace(UUID.randomUUID(), name, description, ownerId, false, Instant.now());
     }
 }

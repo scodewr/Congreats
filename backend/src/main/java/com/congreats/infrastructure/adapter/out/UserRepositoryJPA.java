@@ -3,6 +3,7 @@ package com.congreats.infrastructure.adapter.out;
 import com.congreats.application.port.out.UserRepository;
 import com.congreats.domain.model.Email;
 import com.congreats.domain.model.User;
+import com.congreats.domain.model.UserRole;
 import com.congreats.infrastructure.entity.UserEntity;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -26,6 +27,7 @@ public class UserRepositoryJPA implements PanacheRepository<UserEntity>, UserRep
             entity.name = user.name();
             entity.email = user.email().value();
             entity.passwordHash = user.passwordHash();
+            entity.role = user.role();
             entity.active = user.active();
         }
     }
@@ -48,5 +50,10 @@ public class UserRepositoryJPA implements PanacheRepository<UserEntity>, UserRep
     @Override
     public long count() {
         return findAll().count();
+    }
+
+    @Override
+    public long countActiveAdmins() {
+        return count("role = ?1 and active = true", UserRole.ADMIN);
     }
 }

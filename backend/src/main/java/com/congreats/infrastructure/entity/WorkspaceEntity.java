@@ -26,6 +26,9 @@ public class WorkspaceEntity extends PanacheEntityBase {
     @Column(name = "owner_id", nullable = false, columnDefinition = "uuid")
     public UUID ownerId;
 
+    @Column(nullable = false)
+    public boolean archived = false;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     public Instant createdAt;
 
@@ -42,11 +45,12 @@ public class WorkspaceEntity extends PanacheEntityBase {
         e.name = w.name();
         e.description = w.description();
         e.ownerId = w.ownerId();
+        e.archived = w.archived();
         e.createdAt = w.createdAt();
         return e;
     }
 
     public Workspace toDomain() {
-        return new Workspace(id, name, description, ownerId, createdAt);
+        return new Workspace(id, name, description, ownerId, archived, createdAt);
     }
 }
