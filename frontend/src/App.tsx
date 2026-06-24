@@ -16,6 +16,7 @@ import AdminEventsPage from './pages/admin/AdminEventsPage'
 import AdminValidationsPage from './pages/admin/AdminValidationsPage'
 import MyValidationsPage from './pages/MyValidationsPage'
 import ValidatorAssignmentsPage from './pages/ValidatorAssignmentsPage'
+import NotificationsSettingsPage from './pages/NotificationsSettingsPage'
 import Layout from './components/Layout'
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
@@ -55,6 +56,7 @@ export default function App() {
             <Route path="/recognitions/new" element={<CreateRecognitionPage />} />
             <Route path="/validations/mine" element={<MyValidationsPage />} />
             <Route path="/validations/assignments" element={<ValidatorAssignmentsPage />} />
+            <Route path="/settings/notifications" element={<NotificationsSettingsPage />} />
             <Route path="/admin/users" element={<RequireAdmin><AdminUsersPage /></RequireAdmin>} />
             <Route path="/admin/workspaces" element={<RequireAdmin><AdminWorkspacesPage /></RequireAdmin>} />
             <Route path="/admin/campaigns" element={<RequireAdmin><AdminCampaignsPage /></RequireAdmin>} />

@@ -3,6 +3,7 @@ package com.congreats.application.usecase.admin;
 import com.congreats.application.port.out.SkillValidationRepository;
 import com.congreats.application.port.out.UserRepository;
 import com.congreats.application.port.out.ValidatorAssignmentRepository;
+import com.congreats.application.usecase.SendValidationNotificationUseCase;
 import com.congreats.domain.exception.DomainException;
 import com.congreats.domain.exception.NotFoundException;
 import com.congreats.domain.model.SkillValidation;
@@ -20,6 +21,7 @@ public class AdminAssignValidatorUseCase {
     @Inject SkillValidationRepository skillValidationRepository;
     @Inject ValidatorAssignmentRepository validatorAssignmentRepository;
     @Inject UserRepository userRepository;
+    @Inject SendValidationNotificationUseCase sendNotification;
 
     public record Command(UUID validationId, UUID validatorId) {}
 
@@ -44,5 +46,7 @@ public class AdminAssignValidatorUseCase {
 
         if (validation.status() == ValidationStatus.PENDING)
             skillValidationRepository.updateStatus(cmd.validationId(), ValidationStatus.IN_PROGRESS, null);
+
+        sendNotification.execute(validation.userId(), validation.skill(), ValidationStatus.IN_PROGRESS);
     }
 }

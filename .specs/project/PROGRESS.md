@@ -3,7 +3,7 @@
 > Este arquivo é atualizado automaticamente a cada task concluída. Mantém o histórico completo de entregas por versão.
 
 **Última Atualização:** 2026-06-23
-**Versão Atual:** v2.1 — Skill Validation (DONE)
+**Versão Atual:** v2.2 — Notifications (DONE)
 
 ---
 
@@ -17,7 +17,7 @@
 | v1.3   | DONE      | Admin Panel                           | 8     | 8         | 100% |
 | v2.0   | DONE      | Medals & Trophies                     | 7     | 7         | 100% |
 | v2.1   | DONE      | Skill Validation                      | 8     | 8         | 100% |
-| v2.2   | PLANNED   | Notifications (Email, WhatsApp, SMS)  | TBD   | 0         | TBD  |
+| v2.2   | DONE      | Notifications (Email, WhatsApp, SMS)  | 7     | 7         | 100% |
 | v3.0   | PLANNED   | API Integrations (GitHub, Jira, Linear) | TBD | 0        | TBD  |
 | v3.1   | PLANNED   | Challenges                            | TBD   | 0         | TBD  |
 | v4.0   | PLANNED   | Certifications of Excellence          | TBD   | 0         | TBD  |
@@ -182,13 +182,41 @@
 
 ---
 
-## v3.0 — Challenges
+## v2.2 — Notifications
 
-### Feature: Challenges
+### Feature: Email / WhatsApp / SMS Notifications
 
-| Task ID | Descrição                   | Status  | Commit | Data |
-|---------|-----------------------------|---------|--------|------|
-| —       | Escopo a definir (fase futura) | TBD  | —      | —    |
+| Task ID  | Descrição                                                                     | Status  | Commit | Data       |
+|----------|-------------------------------------------------------------------------------|---------|--------|------------|
+| NOTIF-T1 | Domínio: NotificationPreferences + ports EmailNotifier + SmsNotifier          | DONE    | —      | 2026-06-23 |
+| NOTIF-T2 | Migration V012 — notification_preferences                                     | DONE    | —      | 2026-06-23 |
+| NOTIF-T3 | Infra: QuarkusEmailNotifier (quarkus-mailer, mock em dev) + TwilioSmsNotifier | DONE    | —      | 2026-06-23 |
+| NOTIF-T4 | Use Case: SendRecognitionNotificationUseCase (email + whatsapp + sms)         | DONE    | —      | 2026-06-23 |
+| NOTIF-T5 | Use Case: SendValidationNotificationUseCase (IN_PROGRESS / APPROVED / REJECTED) | DONE  | —      | 2026-06-23 |
+| NOTIF-T6 | Use Cases: GetNotificationPreferences + UpdateNotificationPreferences         | DONE    | —      | 2026-06-23 |
+| NOTIF-T7 | UI: NotificationsSettingsPage + rota /settings/notifications + link no Navbar | DONE    | —      | 2026-06-23 |
+
+**Progresso:** 7/7 (100%)
+
+**v2.2 Total:** 7/7 (100%)
+
+---
+
+## v3.0 — API Integrations
+
+### Feature: GitHub / Jira / Linear Webhooks
+
+| Task ID  | Descrição                                                                    | Status  | Commit | Data |
+|----------|------------------------------------------------------------------------------|---------|--------|------|
+| INTG-T1  | Domínio: IntegrationPlatform enum + Integration record + porta               | PLANNED | —      | —    |
+| INTG-T2  | Migration V013 — tabela integrations                                         | PLANNED | —      | —    |
+| INTG-T3  | Use Cases: CreateIntegration + ListIntegrations + DeactivateIntegration      | PLANNED | —      | —    |
+| INTG-T4  | Use Cases: ProcessGitHubWebhook + ProcessJiraWebhook + ProcessLinearWebhook  | PLANNED | —      | —    |
+| INTG-T5  | IntegrationController (admin CRUD) + WebhookController (HMAC-SHA256)         | PLANNED | —      | —    |
+| INTG-T6  | JwtAuthFilter: skip /webhooks/**                                             | PLANNED | —      | —    |
+| INTG-T7  | UI: IntegrationsPage (admin) + rota /admin/integrations                      | PLANNED | —      | —    |
+
+**Progresso:** 0/7 (0%)
 
 **v3.0 Total:** TBD
 
@@ -206,6 +234,7 @@
 | 2026-06-23 | ADM-T1..ADM-T8      | Admin Panel — usuários, workspaces, campanhas, eventos | —       |
 | 2026-06-23 | MEDAL-T1..MEDAL-T7  | Medals & Trophies — gamificação idempotente por marcos | —       |
 | 2026-06-23 | VALID-T1..VALID-T8  | Skill Validation — questionários + validadores + admin | —       |
+| 2026-06-23 | NOTIF-T1..NOTIF-T7  | Notifications — email, WhatsApp, SMS + preferences UI  | —       |
 
 ---
 

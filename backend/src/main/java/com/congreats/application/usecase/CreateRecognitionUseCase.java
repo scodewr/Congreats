@@ -27,6 +27,7 @@ public class CreateRecognitionUseCase {
     @Inject WorkspaceRepository workspaceRepository;
     @Inject AwardMedalUseCase awardMedal;
     @Inject UpdateTrophyProgressUseCase updateTrophyProgress;
+    @Inject SendRecognitionNotificationUseCase sendNotification;
 
     public record Command(UUID recognizerId, UUID recognizedId, String categoryName,
                           List<String> skills, String testimonial,
@@ -59,6 +60,8 @@ public class CreateRecognitionUseCase {
 
         awardMedal.execute(cmd.recognizedId());
         updateTrophyProgress.execute(cmd.recognizedId(), recognition.skills());
+        sendNotification.execute(cmd.recognizedId(), recognizer.name(),
+                category.name(), recognition.skills(), cmd.testimonial());
 
         return toView(recognition, recognizer, recognized, category);
     }

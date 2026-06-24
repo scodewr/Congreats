@@ -29,6 +29,9 @@ export default function Navbar() {
           <Link to="/validations/mine" className="text-sm text-gray-600 hover:text-primary-600">
             Validações
           </Link>
+          <Link to="/settings/notifications" className="text-sm text-gray-600 hover:text-primary-600">
+            Notificações
+          </Link>
           {user && (
             <Link to={`/profile/${user.id}`} className="text-sm text-gray-600 hover:text-primary-600">
               {user.name}
