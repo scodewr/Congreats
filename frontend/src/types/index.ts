@@ -120,6 +120,28 @@ export interface EventRankingEntry {
   recognitionCount: number
 }
 
+export interface MedalView {
+  id: string
+  milestone: string
+  label: string
+  awardedAt: string
+  recent: boolean
+}
+
+export interface TrophyView {
+  id: string
+  skill: string
+  level: 'BRONZE' | 'SILVER' | 'GOLD'
+  levelLabel: string
+  awardedAt: string
+  recent: boolean
+}
+
+export interface AchievementsView {
+  medals: MedalView[]
+  trophies: TrophyView[]
+}
+
 export interface EventView {
   id: string
   name: string

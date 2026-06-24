@@ -25,6 +25,8 @@ public class CreateRecognitionUseCase {
     @Inject UserRepository userRepository;
     @Inject CategoryRepository categoryRepository;
     @Inject WorkspaceRepository workspaceRepository;
+    @Inject AwardMedalUseCase awardMedal;
+    @Inject UpdateTrophyProgressUseCase updateTrophyProgress;
 
     public record Command(UUID recognizerId, UUID recognizedId, UUID categoryId,
                           List<String> skills, String testimonial,
@@ -51,6 +53,9 @@ public class CreateRecognitionUseCase {
                 cmd.skills(), cmd.testimonial(), cmd.projectId(), cmd.teamId(), cmd.workspaceId()
         );
         recognitionRepository.save(recognition);
+
+        awardMedal.execute(cmd.recognizedId());
+        updateTrophyProgress.execute(cmd.recognizedId(), recognition.skills());
 
         return toView(recognition, recognizer, recognized, category);
     }

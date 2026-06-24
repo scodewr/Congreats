@@ -1,7 +1,9 @@
 package com.congreats.infrastructure.adapter.in;
 
+import com.congreats.application.dto.AchievementsView;
 import com.congreats.application.dto.ProfileView;
 import com.congreats.application.usecase.GetProfileUseCase;
+import com.congreats.application.usecase.GetUserAchievementsUseCase;
 import com.congreats.application.usecase.SearchUsersUseCase;
 import com.congreats.application.usecase.UpdateProfileUseCase;
 import com.congreats.application.usecase.UploadProfilePhotoUseCase;
@@ -28,6 +30,7 @@ public class ProfileController {
     @Inject UpdateProfileUseCase updateProfile;
     @Inject UploadProfilePhotoUseCase uploadPhoto;
     @Inject SearchUsersUseCase searchUsers;
+    @Inject GetUserAchievementsUseCase getUserAchievements;
     @Inject RequestContext requestContext;
 
     @GET
@@ -46,6 +49,12 @@ public class ProfileController {
     @Path("/{userId}")
     public ProfileView getById(@PathParam("userId") UUID userId) {
         return getProfile.execute(userId);
+    }
+
+    @GET
+    @Path("/{userId}/achievements")
+    public AchievementsView getAchievements(@PathParam("userId") UUID userId) {
+        return getUserAchievements.execute(userId);
     }
 
     @PUT

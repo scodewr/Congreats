@@ -3,13 +3,16 @@ import { Link, useParams } from 'react-router-dom'
 import { profileService } from '../services/profileService'
 import { recognitionService } from '../services/recognitionService'
 import { useAuth } from '../contexts/AuthContext'
-import type { PageResult, ProfileView, RecognitionView } from '../types'
+import type { AchievementsView, PageResult, ProfileView, RecognitionView } from '../types'
+import MedalsSection from '../components/profile/MedalsSection'
+import TrophiesSection from '../components/profile/TrophiesSection'
 
 export default function ProfilePage() {
   const { userId } = useParams<{ userId: string }>()
   const { user: me } = useAuth()
   const [profile, setProfile] = useState<ProfileView | null>(null)
   const [recognitions, setRecognitions] = useState<PageResult<RecognitionView> | null>(null)
+  const [achievements, setAchievements] = useState<AchievementsView | null>(null)
   const [loading, setLoading] = useState(true)
 
   const isOwner = me?.id === userId
@@ -19,8 +22,9 @@ export default function ProfilePage() {
     Promise.all([
       profileService.getById(userId),
       recognitionService.listByProfessional(userId),
+      profileService.getAchievements(userId),
     ])
-      .then(([p, r]) => { setProfile(p); setRecognitions(r) })
+      .then(([p, r, a]) => { setProfile(p); setRecognitions(r); setAchievements(a) })
       .finally(() => setLoading(false))
   }, [userId])
 
@@ -75,6 +79,15 @@ export default function ProfilePage() {
               </span>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* Achievements */}
+      {achievements && (achievements.medals.length > 0 || achievements.trophies.length > 0) && (
+        <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-6">
+          <h2 className="font-semibold text-gray-900">Conquistas</h2>
+          <MedalsSection medals={achievements.medals} />
+          <TrophiesSection trophies={achievements.trophies} />
         </div>
       )}
 

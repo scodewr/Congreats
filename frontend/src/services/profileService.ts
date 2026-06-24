@@ -1,5 +1,5 @@
 import api from './api'
-import type { ProfileView } from '../types'
+import type { AchievementsView, ProfileView } from '../types'
 
 export const profileService = {
   async getMe(): Promise<ProfileView> {
@@ -29,5 +29,10 @@ export const profileService = {
       headers: { 'Content-Type': 'multipart/form-data' },
     })
     return data.photoUrl
+  },
+
+  async getAchievements(userId: string): Promise<AchievementsView> {
+    const { data } = await api.get<AchievementsView>(`/profiles/${userId}/achievements`)
+    return data
   },
 }

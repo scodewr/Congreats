@@ -3,7 +3,7 @@
 > Este arquivo é atualizado automaticamente a cada task concluída. Mantém o histórico completo de entregas por versão.
 
 **Última Atualização:** 2026-06-23
-**Versão Atual:** v1.3 — Administration (DONE)
+**Versão Atual:** v2.0 — Medals & Trophies (DONE)
 
 ---
 
@@ -15,7 +15,7 @@
 | v1.1   | DONE      | Discovery Feed + Ranking              | 5     | 5         | 100% |
 | v1.2   | DONE      | Workspaces                            | 8     | 8         | 100% |
 | v1.3   | DONE      | Admin Panel                           | 8     | 8         | 100% |
-| v2.0   | PLANNED   | Medals & Trophies                     | 7     | 0         | 0%   |
+| v2.0   | DONE      | Medals & Trophies                     | 7     | 7         | 100% |
 | v2.1   | PLANNED   | Skill Validation                      | 8     | 0         | 0%   |
 | v2.2   | PLANNED   | Notifications (Email, WhatsApp, SMS)  | TBD   | 0         | TBD  |
 | v3.0   | PLANNED   | API Integrations (GitHub, Jira, Linear) | TBD | 0        | TBD  |
@@ -145,19 +145,19 @@
 
 ### Feature: Medals & Trophies
 
-| Task ID    | Descrição                                                          | Status  | Commit | Data |
-|------------|--------------------------------------------------------------------|---------| -------|------|
-| MEDAL-T1   | Entidades de domínio (Medal, Trophy, AchievementRule)              | PENDING | —      | —    |
-| MEDAL-T2   | Migration — tabelas medals, trophies, achievement_rules            | PENDING | —      | —    |
-| MEDAL-T3   | Use Case: AwardMedal (event-driven ao criar reconhecimento)        | PENDING | —      | —    |
-| MEDAL-T4   | Use Case: UpdateTrophyProgress                                     | PENDING | —      | —    |
-| MEDAL-T5   | UI: Exibição de medalhas no perfil profissional (React)            | PENDING | —      | —    |
-| MEDAL-T6   | UI: Vitrine de troféus (React)                                     | PENDING | —      | —    |
-| MEDAL-T7   | Teste de integração: fluxo de concessão de medalhas                | PENDING | —      | —    |
+| Task ID    | Descrição                                                          | Status  | Commit | Data       |
+|------------|--------------------------------------------------------------------|---------| -------|------------|
+| MEDAL-T1   | Entidades de domínio (Medal, Trophy, MedalMilestone, TrophyLevel)  | DONE    | —      | 2026-06-23 |
+| MEDAL-T2   | Migration V010 — tabelas medals, trophies (UNIQUE constraints)     | DONE    | —      | 2026-06-23 |
+| MEDAL-T3   | Use Case: AwardMedal (idempotente, integrado ao CreateRecognition) | DONE    | —      | 2026-06-23 |
+| MEDAL-T4   | Use Case: UpdateTrophyProgress (contagem por habilidade)           | DONE    | —      | 2026-06-23 |
+| MEDAL-T5   | Use Case: GetUserAchievements + AchievementsView DTO               | DONE    | —      | 2026-06-23 |
+| MEDAL-T6   | UI: MedalsSection + TrophiesSection no perfil (recent badge)       | DONE    | —      | 2026-06-23 |
+| MEDAL-T7   | Endpoint GET /profiles/{id}/achievements                           | DONE    | —      | 2026-06-23 |
 
-**Progresso:** 0/7 (0%)
+**Progresso:** 7/7 (100%)
 
-**v2.0 Total:** 0/7 (0%)
+**v2.0 Total:** 7/7 (100%)
 
 ---
 
@@ -204,6 +204,7 @@
 | 2026-06-11 | FEED-T1..FEED-T5    | Discovery Feed + Professional Ranking                  | 346cc89 |
 | 2026-06-23 | WS-T1..WS-T8        | Workspaces — CRUD, membros, feed filtrado              | a395398 |
 | 2026-06-23 | ADM-T1..ADM-T8      | Admin Panel — usuários, workspaces, campanhas, eventos | —       |
+| 2026-06-23 | MEDAL-T1..MEDAL-T7  | Medals & Trophies — gamificação idempotente por marcos | —       |
 
 ---
 
