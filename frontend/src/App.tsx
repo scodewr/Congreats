@@ -7,6 +7,8 @@ import ProfilePage from './pages/ProfilePage'
 import EditProfilePage from './pages/EditProfilePage'
 import CreateRecognitionPage from './pages/CreateRecognitionPage'
 import DiscoveryPage from './pages/DiscoveryPage'
+import WorkspacesPage from './pages/WorkspacesPage'
+import WorkspacePage from './pages/WorkspacePage'
 import Layout from './components/Layout'
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
@@ -31,6 +33,8 @@ export default function App() {
           <Route element={<RequireAuth><Layout /></RequireAuth>}>
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/discovery" element={<DiscoveryPage />} />
+            <Route path="/workspaces" element={<WorkspacesPage />} />
+            <Route path="/workspaces/:id" element={<WorkspacePage />} />
             <Route path="/profile/:userId" element={<ProfilePage />} />
             <Route path="/profile/edit" element={<EditProfilePage />} />
             <Route path="/recognitions/new" element={<CreateRecognitionPage />} />

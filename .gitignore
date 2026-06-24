@@ -35,3 +35,9 @@ frontend/dist/
 
 # Local file uploads
 uploads/
+
+/.claude
+
+# Accidental npm artifacts in backend (Java/Maven project)
+backend/package-lock.json
+backend/node_modules/

@@ -20,6 +20,9 @@ export default function Navbar() {
           <Link to="/discovery" className="text-sm text-gray-600 hover:text-primary-600">
             Descobrir
           </Link>
+          <Link to="/workspaces" className="text-sm text-gray-600 hover:text-primary-600">
+            Workspaces
+          </Link>
           <Link to="/recognitions/new" className="text-sm text-gray-600 hover:text-primary-600">
             Reconhecer
           </Link>

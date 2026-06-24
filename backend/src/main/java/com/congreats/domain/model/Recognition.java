@@ -17,10 +17,12 @@ public class Recognition {
     private final String testimonial;
     private final UUID projectId;
     private final UUID teamId;
+    private final UUID workspaceId;
     private final Instant createdAt;
 
     public Recognition(UUID id, UUID recognizerId, UUID recognizedId, UUID categoryId,
-                       List<String> skills, String testimonial, UUID projectId, UUID teamId, Instant createdAt) {
+                       List<String> skills, String testimonial, UUID projectId, UUID teamId,
+                       UUID workspaceId, Instant createdAt) {
         if (recognizerId.equals(recognizedId)) throw new SelfRecognitionException();
         if (skills == null || skills.isEmpty()) throw new DomainException("Pelo menos uma habilidade deve ser reconhecida");
         if (testimonial == null || testimonial.strip().length() < 20)
@@ -34,13 +36,15 @@ public class Recognition {
         this.testimonial = testimonial.strip();
         this.projectId = projectId;
         this.teamId = teamId;
+        this.workspaceId = workspaceId;
         this.createdAt = createdAt;
     }
 
     public static Recognition create(UUID recognizerId, UUID recognizedId, UUID categoryId,
-                                     List<String> skills, String testimonial, UUID projectId, UUID teamId) {
+                                     List<String> skills, String testimonial,
+                                     UUID projectId, UUID teamId, UUID workspaceId) {
         return new Recognition(UUID.randomUUID(), recognizerId, recognizedId, categoryId,
-                skills, testimonial, projectId, teamId, Instant.now());
+                skills, testimonial, projectId, teamId, workspaceId, Instant.now());
     }
 
     private static String toTitleCase(String s) {
@@ -57,5 +61,6 @@ public class Recognition {
     public String testimonial() { return testimonial; }
     public UUID projectId() { return projectId; }
     public UUID teamId() { return teamId; }
+    public UUID workspaceId() { return workspaceId; }
     public Instant createdAt() { return createdAt; }
 }

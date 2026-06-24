@@ -38,6 +38,9 @@ public class RecognitionEntity extends PanacheEntityBase {
     @Column(name = "team_id", columnDefinition = "uuid")
     public UUID teamId;
 
+    @Column(name = "workspace_id", columnDefinition = "uuid")
+    public UUID workspaceId;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     public Instant createdAt;
 
@@ -56,6 +59,7 @@ public class RecognitionEntity extends PanacheEntityBase {
         e.testimonial = r.testimonial();
         e.projectId = r.projectId();
         e.teamId = r.teamId();
+        e.workspaceId = r.workspaceId();
         e.createdAt = r.createdAt();
         e.skills = r.skills();
         return e;
@@ -63,6 +67,6 @@ public class RecognitionEntity extends PanacheEntityBase {
 
     public Recognition toDomain() {
         return new Recognition(id, recognizerId, recognizedId, categoryId,
-                skills, testimonial, projectId, teamId, createdAt);
+                skills, testimonial, projectId, teamId, workspaceId, createdAt);
     }
 }

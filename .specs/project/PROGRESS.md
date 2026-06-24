@@ -2,8 +2,8 @@
 
 > Este arquivo é atualizado automaticamente a cada task concluída. Mantém o histórico completo de entregas por versão.
 
-**Última Atualização:** 2026-06-11
-**Versão Atual:** v1.0 — Foundation (DONE)
+**Última Atualização:** 2026-06-23
+**Versão Atual:** v1.2 — Workspaces (DONE)
 
 ---
 
@@ -12,8 +12,8 @@
 | Versão | Status    | Features                              | Tasks | Concluídas | %    |
 |--------|-----------|---------------------------------------|-------|-----------|------|
 | v1.0   | DONE      | Auth (World+Enterprise), Profile, Recognition | 25 | 25   | 100% |
-| v1.1   | PLANNED   | Discovery Feed                        | 5     | 0         | 0%   |
-| v1.2   | PLANNED   | Workspaces                            | 8     | 0         | 0%   |
+| v1.1   | DONE      | Discovery Feed + Ranking              | 5     | 5         | 100% |
+| v1.2   | DONE      | Workspaces                            | 8     | 8         | 100% |
 | v1.3   | PLANNED   | Admin Panel                           | 8     | 0         | 0%   |
 | v2.0   | PLANNED   | Medals & Trophies                     | 7     | 0         | 0%   |
 | v2.1   | PLANNED   | Skill Validation                      | 8     | 0         | 0%   |
@@ -21,7 +21,7 @@
 | v3.0   | PLANNED   | API Integrations (GitHub, Jira, Linear) | TBD | 0        | TBD  |
 | v3.1   | PLANNED   | Challenges                            | TBD   | 0         | TBD  |
 | v4.0   | PLANNED   | Certifications of Excellence          | TBD   | 0         | TBD  |
-| **Total** | —      | —                                     | **61+** | **25**   | —   |
+| **Total** | —      | —                                     | **61+** | **38**   | —   |
 
 ---
 
@@ -85,17 +85,17 @@
 
 ### Feature: Discovery Feed
 
-| Task ID   | Descrição                                                        | Status  | Commit | Data |
-|-----------|------------------------------------------------------------------|---------|--------|------|
-| FEED-T1   | Use Case: GetDiscoveryFeed (escopo por empresa/área)             | PENDING | —      | —    |
-| FEED-T2   | Use Case: GetProfessionalRanking                                 | PENDING | —      | —    |
-| FEED-T3   | UI: Página de descoberta — feed de reconhecimentos (React)       | PENDING | —      | —    |
-| FEED-T4   | UI: Componente de ranking de profissionais (React)               | PENDING | —      | —    |
-| FEED-T5   | Teste de integração: feed e ranking                              | PENDING | —      | —    |
+| Task ID   | Descrição                                                        | Status  | Commit   | Data       |
+|-----------|------------------------------------------------------------------|---------|----------|------------|
+| FEED-T1   | Use Case: GetDiscoveryFeed (escopo por empresa/área)             | DONE    | 346cc89  | 2026-06-11 |
+| FEED-T2   | Use Case: GetProfessionalRanking                                 | DONE    | 346cc89  | 2026-06-11 |
+| FEED-T3   | UI: Página de descoberta — feed de reconhecimentos (React)       | DONE    | 2a6ff2b  | 2026-06-11 |
+| FEED-T4   | UI: Componente de ranking de profissionais (React)               | DONE    | 2a6ff2b  | 2026-06-11 |
+| FEED-T5   | Teste de integração: feed e ranking                              | DONE    | 2a6ff2b  | 2026-06-11 |
 
-**Progresso:** 0/5 (0%)
+**Progresso:** 5/5 (100%)
 
-**v1.1 Total:** 0/5 (0%)
+**v1.1 Total:** 5/5 (100%)
 
 ---
 
@@ -103,20 +103,20 @@
 
 ### Feature: Workspaces
 
-| Task ID  | Descrição                                                          | Status  | Commit | Data |
-|----------|--------------------------------------------------------------------|---------|--------|------|
-| WS-T1    | Entidade de domínio Workspace e porta de repositório               | PENDING | —      | —    |
-| WS-T2    | Migration — tabelas workspaces, workspace_members                  | PENDING | —      | —    |
-| WS-T3    | Use Case: CreateWorkspace                                          | PENDING | —      | —    |
-| WS-T4    | Use Case: AssignUserToWorkspace                                    | PENDING | —      | —    |
-| WS-T5    | Use Case: GetWorkspaceRecognitions                                 | PENDING | —      | —    |
-| WS-T6    | UI: Seletor de workspace (React)                                   | PENDING | —      | —    |
-| WS-T7    | UI: Feed de reconhecimentos filtrado por workspace (React)         | PENDING | —      | —    |
-| WS-T8    | Teste de integração: fluxo de workspace                            | PENDING | —      | —    |
+| Task ID  | Descrição                                                          | Status  | Commit | Data       |
+|----------|--------------------------------------------------------------------|---------|--------|------------|
+| WS-T1    | Entidade de domínio Workspace e porta de repositório               | DONE    | —      | 2026-06-23 |
+| WS-T2    | Migration — tabelas workspaces, workspace_members                  | DONE    | —      | 2026-06-23 |
+| WS-T3    | Use Case: CreateWorkspace                                          | DONE    | —      | 2026-06-23 |
+| WS-T4    | Use Case: AssignUserToWorkspace                                    | DONE    | —      | 2026-06-23 |
+| WS-T5    | Use Case: GetWorkspaceRecognitions                                 | DONE    | —      | 2026-06-23 |
+| WS-T6    | UI: Lista de workspaces com criação inline (React)                 | DONE    | —      | 2026-06-23 |
+| WS-T7    | UI: Feed de reconhecimentos filtrado por workspace (React)         | DONE    | —      | 2026-06-23 |
+| WS-T8    | Recognition suporta workspaceId opcional                           | DONE    | —      | 2026-06-23 |
 
-**Progresso:** 0/8 (0%)
+**Progresso:** 8/8 (100%)
 
-**v1.2 Total:** 0/8 (0%)
+**v1.2 Total:** 8/8 (100%)
 
 ---
 
@@ -196,11 +196,13 @@
 
 ## Histórico de Conclusões
 
-| Data       | Task ID           | Descrição                                      | Commit |
-|------------|-------------------|------------------------------------------------|--------|
-| 2026-06-11 | AUTH-T1..AUTH-T10 | Implementação completa da feature de Auth      | —      |
-| 2026-06-11 | PROF-T1..PROF-T8  | Implementação completa da feature de Perfil    | —      |
-| 2026-06-11 | REC-T1..REC-T7    | Implementação completa da feature de Reconhecimento | —  |
+| Data       | Task ID             | Descrição                                              | Commit  |
+|------------|---------------------|--------------------------------------------------------|---------|
+| 2026-06-11 | AUTH-T1..AUTH-T10   | Implementação completa da feature de Auth              | —       |
+| 2026-06-11 | PROF-T1..PROF-T8    | Implementação completa da feature de Perfil            | —       |
+| 2026-06-11 | REC-T1..REC-T7      | Implementação completa da feature de Reconhecimento    | —       |
+| 2026-06-11 | FEED-T1..FEED-T5    | Discovery Feed + Professional Ranking                  | 346cc89 |
+| 2026-06-23 | WS-T1..WS-T8        | Workspaces — CRUD, membros, feed filtrado              | —       |
 
 ---
 

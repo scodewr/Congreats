@@ -9,6 +9,7 @@ export const recognitionService = {
     testimonial: string
     projectId?: string
     teamId?: string
+    workspaceId?: string
   }): Promise<RecognitionView> {
     const { data } = await api.post<RecognitionView>('/recognitions', body)
     return data

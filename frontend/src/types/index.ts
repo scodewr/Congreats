@@ -80,3 +80,13 @@ export interface Category {
   description?: string
   suggestedSkills: string[]
 }
+
+export interface WorkspaceView {
+  id: string
+  name: string
+  description?: string
+  ownerId: string
+  ownerName: string
+  memberCount: number
+  createdAt: string
+}

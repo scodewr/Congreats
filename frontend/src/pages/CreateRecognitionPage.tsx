@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { profileService } from '../services/profileService'
 import { recognitionService } from '../services/recognitionService'
+import { workspaceService } from '../services/workspaceService'
 import { useAuth } from '../contexts/AuthContext'
-import type { Category, ProfileView } from '../types'
+import type { Category, ProfileView, WorkspaceView } from '../types'
 
 export default function CreateRecognitionPage() {
   const { user } = useAuth()
@@ -11,8 +12,10 @@ export default function CreateRecognitionPage() {
 
   const [professionals, setProfessionals] = useState<ProfileView[]>([])
   const [categories, setCategories] = useState<Category[]>([])
+  const [workspaces, setWorkspaces] = useState<WorkspaceView[]>([])
   const [recognizedId, setRecognizedId] = useState('')
   const [categoryId, setCategoryId] = useState('')
+  const [workspaceId, setWorkspaceId] = useState('')
   const [skillInput, setSkillInput] = useState('')
   const [skills, setSkills] = useState<string[]>([])
   const [testimonial, setTestimonial] = useState('')
@@ -23,9 +26,11 @@ export default function CreateRecognitionPage() {
     Promise.all([
       profileService.search(0, 100),
       recognitionService.listCategories(),
-    ]).then(([p, c]) => {
+      workspaceService.listMine(),
+    ]).then(([p, c, w]) => {
       setProfessionals(p.filter((prof) => prof.userId !== user?.id))
       setCategories(c)
+      setWorkspaces(w)
     })
   }, [user])
 
@@ -58,7 +63,10 @@ export default function CreateRecognitionPage() {
 
     setLoading(true)
     try {
-      const rec = await recognitionService.create({ recognizedId, categoryId, skills, testimonial })
+      const rec = await recognitionService.create({
+        recognizedId, categoryId, skills, testimonial,
+        workspaceId: workspaceId || undefined,
+      })
       navigate(`/profile/${rec.recognized.userId}`)
     } catch (err: unknown) {
       const msg = (err as { response?: { data?: { error?: string } } })?.response?.data?.error
@@ -133,6 +141,20 @@ export default function CreateRecognitionPage() {
               className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
             />
           </div>
+
+          {/* Workspace (opcional) */}
+          {workspaces.length > 0 && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Workspace <span className="text-gray-400 font-normal">(opcional)</span></label>
+              <select value={workspaceId} onChange={(e) => setWorkspaceId(e.target.value)}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">
+                <option value="">Nenhum</option>
+                {workspaces.map((ws) => (
+                  <option key={ws.id} value={ws.id}>{ws.name}</option>
+                ))}
+              </select>
+            </div>
+          )}
 
           {/* Testimonial */}
           <div>

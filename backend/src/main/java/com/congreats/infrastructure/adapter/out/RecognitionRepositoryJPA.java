@@ -79,6 +79,17 @@ public class RecognitionRepositoryJPA implements PanacheRepository<RecognitionEn
     }
 
     @Override
+    public List<Recognition> findByWorkspaceId(UUID workspaceId, int page, int size) {
+        return find("workspaceId = ?1 order by createdAt desc", workspaceId)
+                .page(page, size).list().stream().map(RecognitionEntity::toDomain).toList();
+    }
+
+    @Override
+    public long countByWorkspaceId(UUID workspaceId) {
+        return count("workspaceId", workspaceId);
+    }
+
+    @Override
     public long countDistinctRecognized() {
         return (long) em.createQuery(
                 "SELECT COUNT(DISTINCT r.recognizedId) FROM RecognitionEntity r")

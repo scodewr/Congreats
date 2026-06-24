@@ -4,7 +4,9 @@ import com.congreats.application.dto.RecognitionView;
 import com.congreats.application.port.out.CategoryRepository;
 import com.congreats.application.port.out.RecognitionRepository;
 import com.congreats.application.port.out.UserRepository;
+import com.congreats.application.port.out.WorkspaceRepository;
 import com.congreats.domain.exception.DomainException;
+import com.congreats.domain.exception.ForbiddenException;
 import com.congreats.domain.exception.NotFoundException;
 import com.congreats.domain.model.Category;
 import com.congreats.domain.model.Recognition;
@@ -22,10 +24,11 @@ public class CreateRecognitionUseCase {
     @Inject RecognitionRepository recognitionRepository;
     @Inject UserRepository userRepository;
     @Inject CategoryRepository categoryRepository;
+    @Inject WorkspaceRepository workspaceRepository;
 
     public record Command(UUID recognizerId, UUID recognizedId, UUID categoryId,
                           List<String> skills, String testimonial,
-                          UUID projectId, UUID teamId) {}
+                          UUID projectId, UUID teamId, UUID workspaceId) {}
 
     @Transactional
     public RecognitionView execute(Command cmd) {
@@ -40,9 +43,12 @@ public class CreateRecognitionUseCase {
                 .orElseThrow(() -> new NotFoundException("Categoria não encontrada"));
         if (!category.active()) throw new DomainException("Categoria inativa");
 
+        if (cmd.workspaceId() != null && !workspaceRepository.isMember(cmd.workspaceId(), cmd.recognizerId()))
+            throw new ForbiddenException("Você não é membro deste workspace");
+
         Recognition recognition = Recognition.create(
                 cmd.recognizerId(), cmd.recognizedId(), cmd.categoryId(),
-                cmd.skills(), cmd.testimonial(), cmd.projectId(), cmd.teamId()
+                cmd.skills(), cmd.testimonial(), cmd.projectId(), cmd.teamId(), cmd.workspaceId()
         );
         recognitionRepository.save(recognition);
 

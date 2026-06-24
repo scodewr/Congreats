@@ -33,13 +33,14 @@ public class RecognitionController {
             @NotEmpty List<String> skills,
             @NotBlank @Size(min = 20, max = 2000) String testimonial,
             UUID projectId,
-            UUID teamId) {}
+            UUID teamId,
+            UUID workspaceId) {}
 
     @POST
     public Response create(@Valid CreateRecognitionRequest req) {
         RecognitionView view = createRecognition.execute(new CreateRecognitionUseCase.Command(
                 requestContext.getUserId(), req.recognizedId(), req.categoryId(),
-                req.skills(), req.testimonial(), req.projectId(), req.teamId()));
+                req.skills(), req.testimonial(), req.projectId(), req.teamId(), req.workspaceId()));
         return Response.status(Response.Status.CREATED).entity(view).build();
     }
 
