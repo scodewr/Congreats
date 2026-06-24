@@ -120,6 +120,36 @@ export interface EventRankingEntry {
   recognitionCount: number
 }
 
+export interface ValidatorAssignmentView {
+  id: string
+  validatorId: string
+  validatorName: string
+  assignedAt: string
+}
+
+export interface QuestionnaireView {
+  id: string
+  validatorId: string
+  validatorName: string
+  decision: 'APPROVED' | 'REJECTED'
+  level: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED' | 'EXPERT'
+  levelLabel: string
+  reasoning: string
+  submittedAt: string
+}
+
+export interface SkillValidationView {
+  id: string
+  userId: string
+  userName: string
+  skill: string
+  status: 'PENDING' | 'IN_PROGRESS' | 'APPROVED' | 'REJECTED'
+  requestedAt: string
+  resolvedAt?: string
+  assignments: ValidatorAssignmentView[]
+  questionnaires: QuestionnaireView[]
+}
+
 export interface MedalView {
   id: string
   milestone: string

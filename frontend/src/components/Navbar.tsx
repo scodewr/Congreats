@@ -26,15 +26,23 @@ export default function Navbar() {
           <Link to="/recognitions/new" className="text-sm text-gray-600 hover:text-primary-600">
             Reconhecer
           </Link>
+          <Link to="/validations/mine" className="text-sm text-gray-600 hover:text-primary-600">
+            Validações
+          </Link>
           {user && (
             <Link to={`/profile/${user.id}`} className="text-sm text-gray-600 hover:text-primary-600">
               {user.name}
             </Link>
           )}
           {user?.role === 'ADMIN' && (
-            <Link to="/admin/users" className="text-sm text-purple-600 hover:text-purple-800 font-medium">
-              Admin
-            </Link>
+            <>
+              <Link to="/admin/users" className="text-sm text-purple-600 hover:text-purple-800 font-medium">
+                Admin
+              </Link>
+              <Link to="/admin/validations" className="text-sm text-purple-600 hover:text-purple-800 font-medium">
+                Validar
+              </Link>
+            </>
           )}
           <button onClick={handleLogout} className="text-sm text-gray-500 hover:text-red-500">
             Sair

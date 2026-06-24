@@ -13,6 +13,9 @@ import AdminUsersPage from './pages/admin/AdminUsersPage'
 import AdminWorkspacesPage from './pages/admin/AdminWorkspacesPage'
 import AdminCampaignsPage from './pages/admin/AdminCampaignsPage'
 import AdminEventsPage from './pages/admin/AdminEventsPage'
+import AdminValidationsPage from './pages/admin/AdminValidationsPage'
+import MyValidationsPage from './pages/MyValidationsPage'
+import ValidatorAssignmentsPage from './pages/ValidatorAssignmentsPage'
 import Layout from './components/Layout'
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
@@ -50,10 +53,13 @@ export default function App() {
             <Route path="/profile/:userId" element={<ProfilePage />} />
             <Route path="/profile/edit" element={<EditProfilePage />} />
             <Route path="/recognitions/new" element={<CreateRecognitionPage />} />
+            <Route path="/validations/mine" element={<MyValidationsPage />} />
+            <Route path="/validations/assignments" element={<ValidatorAssignmentsPage />} />
             <Route path="/admin/users" element={<RequireAdmin><AdminUsersPage /></RequireAdmin>} />
             <Route path="/admin/workspaces" element={<RequireAdmin><AdminWorkspacesPage /></RequireAdmin>} />
             <Route path="/admin/campaigns" element={<RequireAdmin><AdminCampaignsPage /></RequireAdmin>} />
             <Route path="/admin/events" element={<RequireAdmin><AdminEventsPage /></RequireAdmin>} />
+            <Route path="/admin/validations" element={<RequireAdmin><AdminValidationsPage /></RequireAdmin>} />
           </Route>
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>

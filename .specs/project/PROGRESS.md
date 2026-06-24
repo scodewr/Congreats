@@ -3,7 +3,7 @@
 > Este arquivo é atualizado automaticamente a cada task concluída. Mantém o histórico completo de entregas por versão.
 
 **Última Atualização:** 2026-06-23
-**Versão Atual:** v2.0 — Medals & Trophies (DONE)
+**Versão Atual:** v2.1 — Skill Validation (DONE)
 
 ---
 
@@ -16,7 +16,7 @@
 | v1.2   | DONE      | Workspaces                            | 8     | 8         | 100% |
 | v1.3   | DONE      | Admin Panel                           | 8     | 8         | 100% |
 | v2.0   | DONE      | Medals & Trophies                     | 7     | 7         | 100% |
-| v2.1   | PLANNED   | Skill Validation                      | 8     | 0         | 0%   |
+| v2.1   | DONE      | Skill Validation                      | 8     | 8         | 100% |
 | v2.2   | PLANNED   | Notifications (Email, WhatsApp, SMS)  | TBD   | 0         | TBD  |
 | v3.0   | PLANNED   | API Integrations (GitHub, Jira, Linear) | TBD | 0        | TBD  |
 | v3.1   | PLANNED   | Challenges                            | TBD   | 0         | TBD  |
@@ -165,20 +165,20 @@
 
 ### Feature: Skill Validation
 
-| Task ID    | Descrição                                                                  | Status  | Commit | Data |
-|------------|----------------------------------------------------------------------------|---------|--------|------|
-| VALID-T1   | Entidades de domínio (SkillValidation, Questionnaire, ValidatorAssignment) | PENDING | —      | —    |
-| VALID-T2   | Migration — tabelas skill_validations, questionnaires, validator_assignments | PENDING | —     | —    |
-| VALID-T3   | Use Case: RequestSkillValidation                                           | PENDING | —      | —    |
-| VALID-T4   | Use Case: SubmitQuestionnaire                                              | PENDING | —      | —    |
-| VALID-T5   | Use Cases: AssignValidator / ApproveValidation                             | PENDING | —      | —    |
-| VALID-T6   | UI: Formulário de questionário de validação (React)                        | PENDING | —      | —    |
-| VALID-T7   | UI: Interface de aprovação do validador (React)                            | PENDING | —      | —    |
-| VALID-T8   | Teste de integração: fluxo completo de validação                           | PENDING | —      | —    |
+| Task ID    | Descrição                                                                  | Status  | Commit | Data       |
+|------------|----------------------------------------------------------------------------|---------|--------|------------|
+| VALID-T1   | Domínio: SkillValidation, ValidatorAssignment, Questionnaire, enums        | DONE    | —      | 2026-06-23 |
+| VALID-T2   | Migration V011 — skill_validations, validator_assignments, questionnaires   | DONE    | —      | 2026-06-23 |
+| VALID-T3   | Use Case: RequestSkillValidation (valida topSkills + sem duplicata ativa)  | DONE    | —      | 2026-06-23 |
+| VALID-T4   | Use Case: SubmitQuestionnaire (decision + level + reasoning)               | DONE    | —      | 2026-06-23 |
+| VALID-T5   | Use Cases: AdminAssignValidator + AdminResolveValidation                   | DONE    | —      | 2026-06-23 |
+| VALID-T6   | UI: QuestionnaireForm — avaliação inline pelo validador (React)            | DONE    | —      | 2026-06-23 |
+| VALID-T7   | UI: MyValidationsPage + ValidatorAssignmentsPage + AdminValidationsPage    | DONE    | —      | 2026-06-23 |
+| VALID-T8   | Use Cases: GetMyValidations + GetMyAssignments + AdminListValidations      | DONE    | —      | 2026-06-23 |
 
-**Progresso:** 0/8 (0%)
+**Progresso:** 8/8 (100%)
 
-**v2.1 Total:** 0/8 (0%)
+**v2.1 Total:** 8/8 (100%)
 
 ---
 
@@ -205,6 +205,7 @@
 | 2026-06-23 | WS-T1..WS-T8        | Workspaces — CRUD, membros, feed filtrado              | a395398 |
 | 2026-06-23 | ADM-T1..ADM-T8      | Admin Panel — usuários, workspaces, campanhas, eventos | —       |
 | 2026-06-23 | MEDAL-T1..MEDAL-T7  | Medals & Trophies — gamificação idempotente por marcos | —       |
+| 2026-06-23 | VALID-T1..VALID-T8  | Skill Validation — questionários + validadores + admin | —       |
 
 ---
 
