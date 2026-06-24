@@ -30,6 +30,16 @@ public class CategoryEntity extends PanacheEntityBase {
     @Column(name = "skill", length = 100)
     public List<String> suggestedSkills;
 
+    public static CategoryEntity from(Category c) {
+        CategoryEntity e = new CategoryEntity();
+        e.id = c.id();
+        e.name = c.name();
+        e.description = c.description();
+        e.active = c.active();
+        e.suggestedSkills = new java.util.ArrayList<>(c.suggestedSkills());
+        return e;
+    }
+
     public Category toDomain() {
         return new Category(id, name, description,
                 suggestedSkills != null ? suggestedSkills : List.of(), active);

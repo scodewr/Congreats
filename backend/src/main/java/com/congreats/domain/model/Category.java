@@ -24,4 +24,8 @@ public class Category {
     public String description() { return description; }
     public List<String> suggestedSkills() { return suggestedSkills; }
     public boolean active() { return active; }
+
+    public static Category create(String name) {
+        return new Category(java.util.UUID.randomUUID(), name.trim(), null, List.of(), true);
+    }
 }

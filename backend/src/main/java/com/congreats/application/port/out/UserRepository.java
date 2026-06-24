@@ -13,6 +13,7 @@ public interface UserRepository {
     Optional<User> findById(UUID id);
     Optional<User> findByEmail(Email email);
     List<User> findAll(int page, int size);
+    List<User> searchByName(String q, int page, int size);
     long count();
     long countActiveAdmins();
 }

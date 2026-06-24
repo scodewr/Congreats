@@ -28,7 +28,7 @@ public class CreateRecognitionUseCase {
     @Inject AwardMedalUseCase awardMedal;
     @Inject UpdateTrophyProgressUseCase updateTrophyProgress;
 
-    public record Command(UUID recognizerId, UUID recognizedId, UUID categoryId,
+    public record Command(UUID recognizerId, UUID recognizedId, String categoryName,
                           List<String> skills, String testimonial,
                           UUID projectId, UUID teamId, UUID workspaceId) {}
 
@@ -41,15 +41,18 @@ public class CreateRecognitionUseCase {
         User recognizer = userRepository.findById(cmd.recognizerId())
                 .orElseThrow(() -> new NotFoundException("Usuário não encontrado"));
 
-        Category category = categoryRepository.findById(cmd.categoryId())
-                .orElseThrow(() -> new NotFoundException("Categoria não encontrada"));
-        if (!category.active()) throw new DomainException("Categoria inativa");
+        Category category = categoryRepository.findByNameIgnoreCase(cmd.categoryName())
+                .orElseGet(() -> {
+                    Category newCat = Category.create(cmd.categoryName());
+                    categoryRepository.save(newCat);
+                    return newCat;
+                });
 
         if (cmd.workspaceId() != null && !workspaceRepository.isMember(cmd.workspaceId(), cmd.recognizerId()))
             throw new ForbiddenException("Você não é membro deste workspace");
 
         Recognition recognition = Recognition.create(
-                cmd.recognizerId(), cmd.recognizedId(), cmd.categoryId(),
+                cmd.recognizerId(), cmd.recognizedId(), category.id(),
                 cmd.skills(), cmd.testimonial(), cmd.projectId(), cmd.teamId(), cmd.workspaceId()
         );
         recognitionRepository.save(recognition);

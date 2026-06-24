@@ -44,7 +44,16 @@ public class UserRepositoryJPA implements PanacheRepository<UserEntity>, UserRep
 
     @Override
     public List<User> findAll(int page, int size) {
-        return findAll().page(page, size).list().stream().map(UserEntity::toDomain).toList();
+        return find("active = true", io.quarkus.panache.common.Sort.by("name"))
+                .page(page, size).list().stream().map(UserEntity::toDomain).toList();
+    }
+
+    @Override
+    public List<User> searchByName(String q, int page, int size) {
+        if (q == null || q.isBlank()) return findAll(page, size);
+        return find("lower(name) like lower(?1) and active = true",
+                io.quarkus.panache.common.Sort.by("name"), "%" + q.trim() + "%")
+                .page(page, size).list().stream().map(UserEntity::toDomain).toList();
     }
 
     @Override

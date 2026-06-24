@@ -4,7 +4,7 @@ import type { Category, PageResult, RecognitionView } from '../types'
 export const recognitionService = {
   async create(body: {
     recognizedId: string
-    categoryId: string
+    categoryName: string
     skills: string[]
     testimonial: string
     projectId?: string
@@ -24,6 +24,11 @@ export const recognitionService = {
 
   async listCategories(): Promise<Category[]> {
     const { data } = await api.get<Category[]>('/categories')
+    return data
+  },
+
+  async searchCategories(q: string, limit = 10): Promise<Category[]> {
+    const { data } = await api.get<Category[]>('/categories', { params: { q, limit } })
     return data
   },
 }

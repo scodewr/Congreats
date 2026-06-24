@@ -34,9 +34,10 @@ public class ProfileController {
     @Inject RequestContext requestContext;
 
     @GET
-    public List<ProfileView> list(@QueryParam("page") @DefaultValue("0") int page,
+    public List<ProfileView> list(@QueryParam("q") @DefaultValue("") String q,
+                                  @QueryParam("page") @DefaultValue("0") int page,
                                   @QueryParam("size") @DefaultValue("20") int size) {
-        return searchUsers.execute(page, size);
+        return searchUsers.execute(q, page, size);
     }
 
     @GET

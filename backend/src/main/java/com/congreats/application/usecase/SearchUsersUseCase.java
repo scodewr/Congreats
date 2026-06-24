@@ -17,17 +17,16 @@ public class SearchUsersUseCase {
     @Inject UserRepository userRepository;
     @Inject ProfileRepository profileRepository;
 
-    public List<ProfileView> execute(int page, int size) {
-        return userRepository.findAll(page, size).stream()
-                .filter(User::active)
+    public List<ProfileView> execute(String q, int page, int size) {
+        return userRepository.searchByName(q, page, size).stream()
                 .map(u -> {
                     Optional<Profile> profile = profileRepository.findByUserId(u.id());
-                    String photo = profile.map(Profile::photoUrl).orElse(null);
                     return new ProfileView(u.id(), u.name(), u.email().value(),
                             profile.map(Profile::bio).orElse(null),
                             profile.map(Profile::jobTitle).orElse(null),
                             profile.map(Profile::company).orElse(null),
-                            photo, List.of(), List.of(), List.of(), 0L, u.createdAt());
+                            profile.map(Profile::photoUrl).orElse(null),
+                            List.of(), List.of(), List.of(), 0L, u.createdAt());
                 })
                 .toList();
     }

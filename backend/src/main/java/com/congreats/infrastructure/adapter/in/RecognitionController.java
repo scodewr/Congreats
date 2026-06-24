@@ -29,7 +29,7 @@ public class RecognitionController {
 
     public record CreateRecognitionRequest(
             @NotNull UUID recognizedId,
-            @NotNull UUID categoryId,
+            @NotBlank String categoryName,
             @NotEmpty List<String> skills,
             @NotBlank @Size(min = 20, max = 2000) String testimonial,
             UUID projectId,
@@ -39,7 +39,7 @@ public class RecognitionController {
     @POST
     public Response create(@Valid CreateRecognitionRequest req) {
         RecognitionView view = createRecognition.execute(new CreateRecognitionUseCase.Command(
-                requestContext.getUserId(), req.recognizedId(), req.categoryId(),
+                requestContext.getUserId(), req.recognizedId(), req.categoryName(),
                 req.skills(), req.testimonial(), req.projectId(), req.teamId(), req.workspaceId()));
         return Response.status(Response.Status.CREATED).entity(view).build();
     }

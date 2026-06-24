@@ -15,4 +15,8 @@ public class ListCategoriesUseCase {
     public List<Category> execute() {
         return categoryRepository.findAllActive();
     }
+
+    public List<Category> search(String q, int limit) {
+        return categoryRepository.searchByName(q, limit);
+    }
 }

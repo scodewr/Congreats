@@ -12,8 +12,8 @@ export const profileService = {
     return data
   },
 
-  async search(page = 0, size = 20): Promise<ProfileView[]> {
-    const { data } = await api.get<ProfileView[]>('/profiles', { params: { page, size } })
+  async search(q = '', page = 0, size = 20): Promise<ProfileView[]> {
+    const { data } = await api.get<ProfileView[]>('/profiles', { params: { q, page, size } })
     return data
   },
 
