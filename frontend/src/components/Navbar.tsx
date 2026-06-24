@@ -45,6 +45,9 @@ export default function Navbar() {
               <Link to="/admin/validations" className="text-sm text-purple-600 hover:text-purple-800 font-medium">
                 Validar
               </Link>
+              <Link to="/admin/integrations" className="text-sm text-purple-600 hover:text-purple-800 font-medium">
+                Integrações
+              </Link>
             </>
           )}
           <button onClick={handleLogout} className="text-sm text-gray-500 hover:text-red-500">

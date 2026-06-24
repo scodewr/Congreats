@@ -14,6 +14,7 @@ import AdminWorkspacesPage from './pages/admin/AdminWorkspacesPage'
 import AdminCampaignsPage from './pages/admin/AdminCampaignsPage'
 import AdminEventsPage from './pages/admin/AdminEventsPage'
 import AdminValidationsPage from './pages/admin/AdminValidationsPage'
+import AdminIntegrationsPage from './pages/admin/AdminIntegrationsPage'
 import MyValidationsPage from './pages/MyValidationsPage'
 import ValidatorAssignmentsPage from './pages/ValidatorAssignmentsPage'
 import NotificationsSettingsPage from './pages/NotificationsSettingsPage'
@@ -62,6 +63,7 @@ export default function App() {
             <Route path="/admin/campaigns" element={<RequireAdmin><AdminCampaignsPage /></RequireAdmin>} />
             <Route path="/admin/events" element={<RequireAdmin><AdminEventsPage /></RequireAdmin>} />
             <Route path="/admin/validations" element={<RequireAdmin><AdminValidationsPage /></RequireAdmin>} />
+            <Route path="/admin/integrations" element={<RequireAdmin><AdminIntegrationsPage /></RequireAdmin>} />
           </Route>
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>

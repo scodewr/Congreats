@@ -3,7 +3,7 @@
 > Este arquivo é atualizado automaticamente a cada task concluída. Mantém o histórico completo de entregas por versão.
 
 **Última Atualização:** 2026-06-23
-**Versão Atual:** v2.2 — Notifications (DONE)
+**Versão Atual:** v3.0 — API Integrations (DONE)
 
 ---
 
@@ -18,7 +18,7 @@
 | v2.0   | DONE      | Medals & Trophies                     | 7     | 7         | 100% |
 | v2.1   | DONE      | Skill Validation                      | 8     | 8         | 100% |
 | v2.2   | DONE      | Notifications (Email, WhatsApp, SMS)  | 7     | 7         | 100% |
-| v3.0   | PLANNED   | API Integrations (GitHub, Jira, Linear) | TBD | 0        | TBD  |
+| v3.0   | DONE      | API Integrations (GitHub, Jira, Linear) | 7   | 7        | 100% |
 | v3.1   | PLANNED   | Challenges                            | TBD   | 0         | TBD  |
 | v4.0   | PLANNED   | Certifications of Excellence          | TBD   | 0         | TBD  |
 | **Total** | —      | —                                     | **61+** | **46**   | —   |
@@ -208,15 +208,15 @@
 
 | Task ID  | Descrição                                                                    | Status  | Commit | Data |
 |----------|------------------------------------------------------------------------------|---------|--------|------|
-| INTG-T1  | Domínio: IntegrationPlatform enum + Integration record + porta               | PLANNED | —      | —    |
-| INTG-T2  | Migration V013 — tabela integrations                                         | PLANNED | —      | —    |
-| INTG-T3  | Use Cases: CreateIntegration + ListIntegrations + DeactivateIntegration      | PLANNED | —      | —    |
-| INTG-T4  | Use Cases: ProcessGitHubWebhook + ProcessJiraWebhook + ProcessLinearWebhook  | PLANNED | —      | —    |
-| INTG-T5  | IntegrationController (admin CRUD) + WebhookController (HMAC-SHA256)         | PLANNED | —      | —    |
-| INTG-T6  | JwtAuthFilter: skip /webhooks/**                                             | PLANNED | —      | —    |
-| INTG-T7  | UI: IntegrationsPage (admin) + rota /admin/integrations                      | PLANNED | —      | —    |
+| INTG-T1  | Domínio: IntegrationPlatform enum + Integration record + porta               | DONE    | —      | 2026-06-23 |
+| INTG-T2  | Migration V013 — tabela integrations                                         | DONE    | —      | 2026-06-23 |
+| INTG-T3  | Use Cases: CreateIntegration + ListIntegrations + DeactivateIntegration      | DONE    | —      | 2026-06-23 |
+| INTG-T4  | Use Case: ProcessWebhookUseCase (GitHub+Jira+Linear, HMAC-SHA256)            | DONE    | —      | 2026-06-23 |
+| INTG-T5  | IntegrationController (admin CRUD) + WebhookController (secret routing)      | DONE    | —      | 2026-06-23 |
+| INTG-T6  | JwtAuthFilter: skip /webhooks/**                                             | DONE    | —      | 2026-06-23 |
+| INTG-T7  | UI: AdminIntegrationsPage + rota /admin/integrations + link no Navbar        | DONE    | —      | 2026-06-23 |
 
-**Progresso:** 0/7 (0%)
+**Progresso:** 7/7 (100%)
 
 **v3.0 Total:** TBD
 
@@ -235,6 +235,7 @@
 | 2026-06-23 | MEDAL-T1..MEDAL-T7  | Medals & Trophies — gamificação idempotente por marcos | —       |
 | 2026-06-23 | VALID-T1..VALID-T8  | Skill Validation — questionários + validadores + admin | —       |
 | 2026-06-23 | NOTIF-T1..NOTIF-T7  | Notifications — email, WhatsApp, SMS + preferences UI  | —       |
+| 2026-06-23 | INTG-T1..INTG-T7    | API Integrations — GitHub/Jira/Linear webhooks + admin | —       |
 
 ---
 

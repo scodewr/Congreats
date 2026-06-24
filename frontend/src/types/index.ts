@@ -172,6 +172,22 @@ export interface AchievementsView {
   trophies: TrophyView[]
 }
 
+export interface IntegrationView {
+  id: string
+  platform: 'GITHUB' | 'JIRA' | 'LINEAR'
+  platformLabel: string
+  name: string
+  webhookSecret: string
+  categoryId?: string
+  categoryName?: string
+  workspaceId?: string
+  workspaceName?: string
+  ownerId: string
+  ownerName?: string
+  active: boolean
+  createdAt: string
+}
+
 export interface NotificationPreferencesView {
   userId: string
   emailEnabled: boolean

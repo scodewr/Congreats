@@ -26,7 +26,8 @@ public class JwtAuthFilter implements ContainerRequestFilter {
 
         if (path.startsWith("auth/") || path.startsWith("/auth/")
                 || path.equals("/files") || path.startsWith("/files/")
-                || path.equals("/campaigns/active") || path.startsWith("/events/") && path.endsWith("/ranking")) {
+                || path.equals("/campaigns/active") || path.startsWith("/events/") && path.endsWith("/ranking")
+                || path.startsWith("/webhooks/") || path.startsWith("webhooks/")) {
             return;
         }
 
