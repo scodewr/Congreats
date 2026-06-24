@@ -3,32 +3,36 @@ package com.congreats.infrastructure.adapter.in;
 import com.congreats.application.usecase.ProcessWebhookUseCase;
 import com.congreats.domain.exception.DomainException;
 import com.congreats.domain.exception.NotFoundException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.jboss.logging.Logger;
 
+import java.util.Collections;
 import java.util.Map;
 
 @Path("/webhooks")
-@Consumes(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.TEXT_PLAIN)
 @Produces(MediaType.APPLICATION_JSON)
 public class WebhookController {
 
     private static final Logger LOG = Logger.getLogger(WebhookController.class);
+    private static final TypeReference<Map<String, Object>> MAP_TYPE = new TypeReference<>() {};
 
     @Inject ProcessWebhookUseCase processWebhook;
+    @Inject ObjectMapper objectMapper;
 
     @POST
     @Path("/github/{secret}")
     public Response github(
             @PathParam("secret") String secret,
             @HeaderParam("X-Hub-Signature-256") String signature,
-            String rawPayload,
-            Map<String, Object> body
+            String rawPayload
     ) {
-        return handle("GITHUB", secret, signature, rawPayload, body);
+        return handle("GITHUB", secret, signature, rawPayload);
     }
 
     @POST
@@ -36,10 +40,9 @@ public class WebhookController {
     public Response jira(
             @PathParam("secret") String secret,
             @HeaderParam("X-Hub-Signature") String signature,
-            String rawPayload,
-            Map<String, Object> body
+            String rawPayload
     ) {
-        return handle("JIRA", secret, signature, rawPayload, body);
+        return handle("JIRA", secret, signature, rawPayload);
     }
 
     @POST
@@ -47,16 +50,20 @@ public class WebhookController {
     public Response linear(
             @PathParam("secret") String secret,
             @HeaderParam("Linear-Signature") String signature,
-            String rawPayload,
-            Map<String, Object> body
+            String rawPayload
     ) {
-        return handle("LINEAR", secret, signature, rawPayload, body);
+        return handle("LINEAR", secret, signature, rawPayload);
     }
 
-    private Response handle(String platform, String secret, String signature, String rawPayload, Map<String, Object> body) {
+    private Response handle(String platform, String secret, String signature, String rawPayload) {
         try {
+            String payload = rawPayload != null ? rawPayload : "";
+            Map<String, Object> body = payload.isBlank()
+                    ? Collections.emptyMap()
+                    : objectMapper.readValue(payload, MAP_TYPE);
+
             processWebhook.execute(new ProcessWebhookUseCase.WebhookEvent(
-                    platform, secret, signature, rawPayload != null ? rawPayload : "", body));
+                    platform, secret, signature, payload, body));
             return Response.ok(Map.of("status", "ok")).build();
         } catch (NotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
