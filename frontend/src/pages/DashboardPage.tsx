@@ -8,7 +8,7 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    profileService.search(0, 20)
+    profileService.search('', 0, 20)
       .then(setProfiles)
       .finally(() => setLoading(false))
   }, [])

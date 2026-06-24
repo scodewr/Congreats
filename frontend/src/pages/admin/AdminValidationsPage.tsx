@@ -25,7 +25,7 @@ function AssignForm({ validationId, onAssign }: AssignFormProps) {
 
   useEffect(() => {
     if (open && users.length === 0) {
-      profileService.search(0, 50).then(setUsers)
+      profileService.search('', 0, 50).then(setUsers)
     }
   }, [open])
 

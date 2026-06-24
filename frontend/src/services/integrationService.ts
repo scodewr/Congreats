@@ -22,7 +22,6 @@ export const integrationService = {
   },
 
   webhookUrl(platform: string, secret: string): string {
-    const base = import.meta.env.VITE_API_URL ?? 'http://localhost:8080'
-    return `${base}/webhooks/${platform.toLowerCase()}/${secret}`
+    return `${window.location.origin}/api/webhooks/${platform.toLowerCase()}/${secret}`
   },
 }

@@ -14,7 +14,7 @@ export default function AdminWorkspacesPage() {
   const load = () =>
     Promise.all([
       adminService.listWorkspaces(),
-      profileService.search(0, 100),
+      profileService.search('', 0, 100),
     ]).then(([ws, profs]) => {
       setResult(ws)
       setProfessionals(profs)

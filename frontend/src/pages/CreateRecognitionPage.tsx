@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { profileService } from '../services/profileService'
 import { recognitionService } from '../services/recognitionService'
@@ -23,7 +23,7 @@ interface UserComboboxProps {
   excludeId?: string
 }
 
-function UserCombobox({ value, onChange, excludeId }: UserComboboxProps) {
+function UserCombobox({ onChange, excludeId }: UserComboboxProps) {
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<ProfileView[]>([])
   const [open, setOpen] = useState(false)

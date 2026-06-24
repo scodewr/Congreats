@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react'
 import { notificationService } from '../services/notificationService'
-import type { NotificationPreferencesView } from '../types'
 
 export default function NotificationsSettingsPage() {
-  const [prefs, setPrefs] = useState<NotificationPreferencesView | null>(null)
   const [form, setForm] = useState({
     emailEnabled: true,
     whatsappNumber: '',
@@ -19,7 +17,6 @@ export default function NotificationsSettingsPage() {
   useEffect(() => {
     notificationService.getPreferences()
       .then(p => {
-        setPrefs(p)
         setForm({
           emailEnabled: p.emailEnabled,
           whatsappNumber: p.whatsappNumber ?? '',
@@ -38,12 +35,11 @@ export default function NotificationsSettingsPage() {
     setSaved(false)
     setError('')
     try {
-      const updated = await notificationService.updatePreferences({
+      await notificationService.updatePreferences({
         ...form,
         whatsappNumber: form.whatsappNumber || undefined,
         smsNumber: form.smsNumber || undefined,
       })
-      setPrefs(updated)
       setSaved(true)
       setTimeout(() => setSaved(false), 3000)
     } catch {

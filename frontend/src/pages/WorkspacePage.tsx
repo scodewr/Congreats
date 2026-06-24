@@ -21,7 +21,7 @@ export default function WorkspacePage() {
     Promise.all([
       workspaceService.listMine(),
       workspaceService.getFeed(id),
-      profileService.search(0, 100),
+      profileService.search('', 0, 100),
     ]).then(([workspaces, feedData, profs]) => {
       setWorkspace(workspaces.find((ws) => ws.id === id) ?? null)
       setFeed(feedData)
