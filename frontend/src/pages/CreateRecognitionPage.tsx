@@ -5,6 +5,9 @@ import { recognitionService } from '../services/recognitionService'
 import { workspaceService } from '../services/workspaceService'
 import { useAuth } from '../contexts/AuthContext'
 import type { Category, ProfileView, WorkspaceView } from '../types'
+import Button from '../components/ui/Button'
+import Textarea from '../components/ui/Textarea'
+import Select from '../components/ui/Select'
 
 function useDebounce<T>(value: T, ms: number): T {
   const [debounced, setDebounced] = useState(value)
@@ -58,9 +61,9 @@ function UserCombobox({ onChange, excludeId }: UserComboboxProps) {
   return (
     <div ref={ref} style={{ position: 'relative' }}>
       {selectedName ? (
-        <div className="flex items-center justify-between border border-primary-400 rounded-lg px-3 py-2 bg-primary-50">
-          <span className="text-sm font-medium text-primary-800">{selectedName}</span>
-          <button type="button" onClick={clear} className="text-gray-400 hover:text-gray-600 ml-2">✕</button>
+        <div className="bg-purple-900 border border-purple-500 rounded-xl px-4 py-3 flex items-center justify-between">
+          <span className="text-purple-300 font-medium">{selectedName}</span>
+          <button type="button" onClick={clear} className="text-text-secondary hover:text-text-primary ml-2">✕</button>
         </div>
       ) : (
         <input
@@ -69,27 +72,27 @@ function UserCombobox({ onChange, excludeId }: UserComboboxProps) {
           onChange={(e) => { setQuery(e.target.value); setOpen(true) }}
           onFocus={() => setOpen(true)}
           placeholder="Digite o nome do profissional…"
-          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+          className="w-full bg-elevated border border-border-dim rounded-xl px-4 py-3 text-text-primary placeholder:text-text-tertiary outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20"
         />
       )}
       {open && results.length > 0 && (
-        <ul className="absolute z-20 w-full bg-white border border-gray-200 rounded-lg shadow-lg mt-1 max-h-56 overflow-y-auto">
+        <ul className="absolute z-20 w-full bg-elevated border border-border-subtle rounded-xl shadow-lg mt-1 max-h-56 overflow-y-auto">
           {results.map((p) => (
             <li key={p.userId}>
               <button
                 type="button"
                 onMouseDown={() => select(p)}
-                className="w-full text-left px-3 py-2 hover:bg-primary-50 text-sm"
+                className="w-full text-left px-4 py-3 hover:bg-overlay text-text-primary text-sm"
               >
-                <span className="font-medium text-gray-900">{p.name}</span>
-                {p.jobTitle && <span className="text-gray-500 ml-2 text-xs">— {p.jobTitle}</span>}
+                <span className="font-medium">{p.name}</span>
+                {p.jobTitle && <span className="text-text-tertiary ml-2 text-xs">— {p.jobTitle}</span>}
               </button>
             </li>
           ))}
         </ul>
       )}
       {open && query.length >= 1 && results.length === 0 && (
-        <div className="absolute z-20 w-full bg-white border border-gray-200 rounded-lg shadow mt-1 px-3 py-2 text-sm text-gray-400">
+        <div className="absolute z-20 w-full bg-elevated border border-border-subtle rounded-xl mt-1 px-4 py-3 text-sm text-text-tertiary">
           Nenhum profissional encontrado
         </div>
       )}
@@ -141,20 +144,20 @@ function CategoryInput({ value, onChange }: CategoryInputProps) {
         onChange={(e) => { setQuery(e.target.value); onChange(e.target.value); setOpen(true) }}
         onFocus={() => setOpen(true)}
         placeholder="Ex: Liderança, Inovação, Colaboração…"
-        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+        className="w-full bg-elevated border border-border-dim rounded-xl px-4 py-3 text-text-primary placeholder:text-text-tertiary outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20"
       />
       {open && suggestions.length > 0 && (
-        <ul className="absolute z-20 w-full bg-white border border-gray-200 rounded-lg shadow-lg mt-1 max-h-48 overflow-y-auto">
+        <ul className="absolute z-20 w-full bg-elevated border border-border-subtle rounded-xl shadow-lg mt-1 max-h-48 overflow-y-auto">
           {suggestions.map((c) => (
             <li key={c.id}>
               <button
                 type="button"
                 onMouseDown={() => pick(c.name)}
-                className="w-full text-left px-3 py-2 hover:bg-primary-50 text-sm"
+                className="w-full text-left px-4 py-3 hover:bg-overlay text-text-primary text-sm"
               >
-                <span className="font-medium text-gray-900">{c.name}</span>
+                <span className="font-medium">{c.name}</span>
                 {c.suggestedSkills.length > 0 && (
-                  <span className="text-gray-400 ml-2 text-xs">{c.suggestedSkills.slice(0, 3).join(', ')}</span>
+                  <span className="text-text-tertiary ml-2 text-xs">{c.suggestedSkills.slice(0, 3).join(', ')}</span>
                 )}
               </button>
             </li>
@@ -233,16 +236,20 @@ export default function CreateRecognitionPage() {
 
   return (
     <div className="max-w-2xl mx-auto">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Reconhecer profissional</h1>
+      <h1 className="text-3xl font-bold text-text-primary mb-6">Reconhecer profissional</h1>
 
-      {error && <p className="mb-4 text-sm text-red-600 bg-red-50 px-3 py-2 rounded">{error}</p>}
+      {error && (
+        <div className="mb-4 text-sm px-4 py-3 rounded-xl border" style={{ backgroundColor: 'rgba(232,48,80,0.1)', color: '#E83050', borderColor: 'rgba(232,48,80,0.2)' }}>
+          {error}
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
+        <div className="bg-surface border border-border-subtle rounded-2xl p-6 space-y-5">
 
-          {/* Professional search */}
+          {/* Profissional */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Profissional *</label>
+            <label className="block text-sm font-medium text-text-secondary mb-2">Profissional *</label>
             <UserCombobox
               value={recognizedId}
               onChange={(id) => setRecognizedId(id)}
@@ -250,24 +257,24 @@ export default function CreateRecognitionPage() {
             />
           </div>
 
-          {/* Category autocomplete */}
+          {/* Categoria */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Categoria *</label>
+            <label className="block text-sm font-medium text-text-secondary mb-2">Categoria *</label>
             <CategoryInput value={categoryName} onChange={setCategoryName} />
-            <p className="text-xs text-gray-400 mt-1">Digite livremente ou selecione uma sugestão</p>
+            <p className="text-xs text-text-tertiary mt-1">Digite livremente ou selecione uma sugestão</p>
           </div>
 
           {/* Skills */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Habilidades *</label>
+            <label className="block text-sm font-medium text-text-secondary mb-2">Habilidades *</label>
             {suggestedSkills.length > 0 && (
               <div className="flex flex-wrap gap-1 mb-2">
                 {suggestedSkills.map((s) => (
                   <button key={s} type="button" onClick={() => addSkill(s)}
-                    className={`text-xs px-2 py-0.5 rounded-full border transition-colors ${
+                    className={`text-xs px-3 py-1 rounded-full border transition-colors ${
                       skills.includes(s)
-                        ? 'bg-primary-600 text-white border-primary-600'
-                        : 'border-gray-300 text-gray-600 hover:border-primary-400'
+                        ? 'bg-purple-900 border-purple-500 text-purple-300'
+                        : 'border-border-dim text-text-secondary hover:border-purple-700 hover:text-purple-300'
                     }`}>
                     {s}
                   </button>
@@ -276,9 +283,9 @@ export default function CreateRecognitionPage() {
             )}
             <div className="flex flex-wrap gap-1 mb-2">
               {skills.map((s) => (
-                <span key={s} className="inline-flex items-center gap-1 bg-primary-50 text-primary-700 text-xs px-2 py-0.5 rounded-full">
+                <span key={s} className="inline-flex items-center gap-1 bg-purple-900 border border-purple-700/50 text-purple-300 text-xs px-3 py-1 rounded-full">
                   {s}
-                  <button type="button" onClick={() => removeSkill(s)} className="hover:text-primary-900">×</button>
+                  <button type="button" onClick={() => removeSkill(s)} className="hover:text-text-primary ml-1">×</button>
                 </span>
               ))}
             </div>
@@ -287,52 +294,48 @@ export default function CreateRecognitionPage() {
               onChange={(e) => setSkillInput(e.target.value)}
               onKeyDown={handleSkillKeyDown}
               placeholder="Digite e pressione Enter para adicionar…"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="w-full bg-elevated border border-border-dim rounded-xl px-4 py-3 text-text-primary placeholder:text-text-tertiary outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20"
             />
           </div>
 
           {/* Workspace */}
           {workspaces.length > 0 && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Workspace <span className="text-gray-400 font-normal">(opcional)</span>
+              <label className="block text-sm font-medium text-text-secondary mb-2">
+                Workspace <span className="text-text-tertiary font-normal">(opcional)</span>
               </label>
-              <select value={workspaceId} onChange={(e) => setWorkspaceId(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">
+              <Select value={workspaceId} onChange={(e) => setWorkspaceId(e.target.value)}>
                 <option value="">Nenhum</option>
                 {workspaces.map((ws) => (
                   <option key={ws.id} value={ws.id}>{ws.name}</option>
                 ))}
-              </select>
+              </Select>
             </div>
           )}
 
-          {/* Testimonial */}
+          {/* Depoimento */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Depoimento * <span className="text-gray-400 font-normal">(mínimo 20 caracteres)</span>
+            <label className="block text-sm font-medium text-text-secondary mb-2">
+              Depoimento * <span className="text-text-tertiary font-normal">(mínimo 20 caracteres)</span>
             </label>
-            <textarea
+            <Textarea
               value={testimonial}
               onChange={(e) => setTestimonial(e.target.value)}
               rows={5}
               maxLength={2000}
               placeholder="Descreva por que está reconhecendo este profissional…"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
             />
-            <p className="text-xs text-gray-400 text-right mt-1">{testimonial.length}/2000</p>
+            <p className="text-xs text-text-tertiary text-right mt-1">{testimonial.length}/2000</p>
           </div>
         </div>
 
         <div className="flex gap-3">
-          <button type="submit" disabled={loading}
-            className="flex-1 bg-primary-600 text-white py-2.5 rounded-lg text-sm font-medium hover:bg-primary-700 disabled:opacity-50">
-            {loading ? 'Enviando…' : 'Enviar reconhecimento'}
-          </button>
-          <button type="button" onClick={() => navigate(-1)}
-            className="px-6 border border-gray-300 rounded-lg text-sm text-gray-600 hover:border-gray-400">
+          <Button type="submit" variant="primary" isLoading={loading} className="flex-1">
+            Enviar reconhecimento
+          </Button>
+          <Button type="button" variant="ghost" onClick={() => navigate(-1)}>
             Cancelar
-          </button>
+          </Button>
         </div>
       </form>
     </div>
