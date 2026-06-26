@@ -3,11 +3,13 @@ import { Link } from 'react-router-dom'
 import { discoveryService } from '../services/discoveryService'
 import { adminService } from '../services/adminService'
 import type { CampaignView, PageResult, ProfileView, RecognitionView } from '../types'
-
-type Tab = 'feed' | 'ranking'
+import TabNav from '../components/ui/TabNav'
+import Avatar from '../components/ui/Avatar'
+import Badge from '../components/ui/Badge'
+import Button from '../components/ui/Button'
+import { RankingBadge } from '../components/ui/AchievementBadge'
 
 export default function DiscoveryPage() {
-  const [tab, setTab] = useState<Tab>('feed')
   const [feed, setFeed] = useState<PageResult<RecognitionView> | null>(null)
   const [ranking, setRanking] = useState<PageResult<ProfileView> | null>(null)
   const [campaigns, setCampaigns] = useState<CampaignView[]>([])
@@ -19,116 +21,88 @@ export default function DiscoveryPage() {
 
   useEffect(() => {
     setLoading(true)
-    if (tab === 'feed') {
-      discoveryService.getFeed(0, 20)
-        .then(setFeed)
-        .finally(() => setLoading(false))
-    } else {
-      discoveryService.getRanking(0, 20)
-        .then(setRanking)
-        .finally(() => setLoading(false))
-    }
-  }, [tab])
+    Promise.all([
+      discoveryService.getFeed(0, 20),
+      discoveryService.getRanking(0, 20),
+    ])
+      .then(([f, r]) => { setFeed(f); setRanking(r) })
+      .finally(() => setLoading(false))
+  }, [])
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Descobrir</h1>
-      </div>
+      <h1 className="text-3xl font-bold text-text-primary mb-6">Descobrir</h1>
 
       {campaigns.length > 0 && (
-        <div className="mb-6 rounded-xl border border-primary-200 bg-primary-50 p-4">
-          <p className="text-xs font-semibold text-primary-600 uppercase tracking-wide mb-1">Campanha ativa</p>
-          {campaigns.map((c) => (
-            <div key={c.id} className="flex items-start justify-between">
+        <div className="bg-gradient-to-r from-purple-900/50 to-wine-900/30 border border-purple-700/40 rounded-2xl p-5 mb-6">
+          <p className="text-xs font-semibold text-purple-300 uppercase tracking-wide mb-2">Campanha ativa</p>
+          {campaigns.map(c => (
+            <div key={c.id} className="flex items-start justify-between gap-4">
               <div>
-                <p className="font-semibold text-primary-800">{c.name}</p>
-                {c.description && <p className="text-sm text-primary-700 mt-0.5">{c.description}</p>}
-                <p className="text-xs text-primary-600 mt-1">
-                  Categoria: {c.categoryName} · até {new Date(c.endsAt).toLocaleDateString('pt-BR')}
+                <p className="font-semibold text-text-primary">{c.name}</p>
+                {c.description && <p className="text-sm text-text-secondary mt-0.5">{c.description}</p>}
+                <p className="text-xs text-text-tertiary mt-1">
+                  {c.categoryName} · até {new Date(c.endsAt).toLocaleDateString('pt-BR')}
                 </p>
               </div>
-              <Link to="/recognitions/new"
-                className="flex-shrink-0 bg-primary-600 text-white text-sm px-3 py-1.5 rounded-lg hover:bg-primary-700">
-                Reconhecer
+              <Link to="/recognitions/new">
+                <Button variant="primary" size="sm">Reconhecer</Button>
               </Link>
             </div>
           ))}
         </div>
       )}
 
-      <div className="flex gap-1 mb-6 border-b border-gray-200">
-        <TabButton active={tab === 'feed'} onClick={() => setTab('feed')}>Feed</TabButton>
-        <TabButton active={tab === 'ranking'} onClick={() => setTab('ranking')}>Ranking</TabButton>
-      </div>
-
-      {loading && (
-        <div className="text-center text-gray-500 py-12">Carregando...</div>
-      )}
-
-      {!loading && tab === 'feed' && <FeedList feed={feed} />}
-      {!loading && tab === 'ranking' && <RankingList ranking={ranking} />}
+      <TabNav
+        defaultTab="feed"
+        tabs={[
+          { id: 'feed', label: 'Feed', content: <FeedTab feed={feed} loading={loading} /> },
+          { id: 'ranking', label: 'Ranking', content: <RankingTab ranking={ranking} loading={loading} /> },
+        ]}
+      />
     </div>
   )
 }
 
-function TabButton({ active, onClick, children }: {
-  active: boolean
-  onClick: () => void
-  children: React.ReactNode
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-        active
-          ? 'border-primary-600 text-primary-600'
-          : 'border-transparent text-gray-500 hover:text-gray-700'
-      }`}
-    >
-      {children}
-    </button>
+function FeedTab({ feed, loading }: { feed: PageResult<RecognitionView> | null; loading: boolean }) {
+  if (loading) return (
+    <div className="space-y-4">
+      {Array.from({ length: 3 }).map((_, i) => (
+        <div key={i} className="shimmer rounded-2xl h-32" />
+      ))}
+    </div>
   )
-}
-
-function FeedList({ feed }: { feed: PageResult<RecognitionView> | null }) {
   if (!feed || feed.content.length === 0) {
-    return <p className="text-gray-500 text-center py-12">Nenhum reconhecimento ainda.</p>
+    return <p className="text-text-secondary text-center py-12">Nenhum reconhecimento ainda.</p>
   }
 
   return (
     <div className="flex flex-col gap-4">
-      {feed.content.map((r) => (
-        <div key={r.id} className="bg-white rounded-xl border border-gray-200 p-5">
+      {feed.content.map(r => (
+        <div key={r.id} className="bg-surface border-l-4 border-l-purple-500 border border-border-subtle rounded-2xl p-5">
           <div className="flex items-start gap-3">
-            <Avatar name={r.recognizer.name} photoUrl={r.recognizer.photoUrl} />
+            <Avatar name={r.recognizer.name} src={r.recognizer.photoUrl} size="md" />
             <div className="flex-1 min-w-0">
-              <p className="text-sm text-gray-700">
-                <Link to={`/profile/${r.recognizer.userId}`} className="font-semibold hover:text-primary-600">
+              <p className="text-sm text-text-primary">
+                <Link to={`/profile/${r.recognizer.userId}`} className="font-semibold text-purple-300 hover:text-purple-400">
                   {r.recognizer.name}
                 </Link>
                 {' reconheceu '}
-                <Link to={`/profile/${r.recognized.userId}`} className="font-semibold hover:text-primary-600">
+                <Link to={`/profile/${r.recognized.userId}`} className="font-semibold text-purple-300 hover:text-purple-400">
                   {r.recognized.name}
                 </Link>
               </p>
-              <span className="inline-block mt-1 text-xs bg-primary-50 text-primary-700 px-2 py-0.5 rounded-full">
-                {r.category.name}
-              </span>
+              <Badge variant="category" className="mt-1">{r.category.name}</Badge>
               {r.skills.length > 0 && (
                 <div className="flex flex-wrap gap-1 mt-2">
-                  {r.skills.map((s) => (
-                    <span key={s} className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">
-                      {s}
-                    </span>
+                  {r.skills.map(s => (
+                    <span key={s} className="text-xs bg-overlay text-text-secondary px-2 py-0.5 rounded-full">{s}</span>
                   ))}
                 </div>
               )}
-              <p className="mt-2 text-sm text-gray-600 italic">"{r.testimonial}"</p>
-              <p className="mt-2 text-xs text-gray-400">
-                {new Date(r.createdAt).toLocaleDateString('pt-BR', {
-                  day: '2-digit', month: 'short', year: 'numeric',
-                })}
+              <p className="mt-2 text-sm text-text-secondary italic">"{r.testimonial}"</p>
+              <p className="mt-1 text-xs text-text-tertiary">
+                {new Date(r.createdAt).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' })}
               </p>
             </div>
           </div>
@@ -138,9 +112,16 @@ function FeedList({ feed }: { feed: PageResult<RecognitionView> | null }) {
   )
 }
 
-function RankingList({ ranking }: { ranking: PageResult<ProfileView> | null }) {
+function RankingTab({ ranking, loading }: { ranking: PageResult<ProfileView> | null; loading: boolean }) {
+  if (loading) return (
+    <div className="space-y-3">
+      {Array.from({ length: 5 }).map((_, i) => (
+        <div key={i} className="shimmer rounded-2xl h-16" />
+      ))}
+    </div>
+  )
   if (!ranking || ranking.content.length === 0) {
-    return <p className="text-gray-500 text-center py-12">Ainda não há dados de ranking.</p>
+    return <p className="text-text-secondary text-center py-12">Ainda não há dados de ranking.</p>
   }
 
   return (
@@ -149,42 +130,20 @@ function RankingList({ ranking }: { ranking: PageResult<ProfileView> | null }) {
         <Link
           key={p.userId}
           to={`/profile/${p.userId}`}
-          className="bg-white rounded-xl border border-gray-200 p-4 hover:border-primary-300 hover:shadow-sm transition-all flex items-center gap-4"
+          className="bg-surface border border-border-subtle rounded-2xl p-4 hover:border-purple-700/50 hover:shadow-purple-glow transition-all flex items-center gap-4"
         >
-          <span className="w-8 text-center text-lg font-bold text-gray-400 flex-shrink-0">
-            {index + 1}
-          </span>
-          <Avatar name={p.name} photoUrl={p.photoUrl} />
+          <RankingBadge position={index + 1} />
+          <Avatar name={p.name} src={p.photoUrl} size="md" />
           <div className="flex-1 min-w-0">
-            <p className="font-semibold text-gray-900 truncate">{p.name}</p>
-            {p.jobTitle && <p className="text-xs text-gray-500 truncate">{p.jobTitle}</p>}
-            {p.topSkills.length > 0 && (
-              <div className="flex flex-wrap gap-1 mt-1">
-                {p.topSkills.slice(0, 3).map((s) => (
-                  <span key={s.skill} className="text-xs bg-primary-50 text-primary-700 px-2 py-0.5 rounded-full">
-                    {s.skill}
-                  </span>
-                ))}
-              </div>
-            )}
+            <p className="font-semibold text-text-primary truncate">{p.name}</p>
+            {p.jobTitle && <p className="text-xs text-text-secondary truncate">{p.jobTitle}</p>}
           </div>
           <div className="text-right flex-shrink-0">
-            <p className="text-lg font-bold text-primary-600">{p.totalRecognitions}</p>
-            <p className="text-xs text-gray-400">reconhecimentos</p>
+            <p className="text-xl font-bold text-purple-300">{p.totalRecognitions}</p>
+            <p className="text-xs text-text-tertiary">reconhecimentos</p>
           </div>
         </Link>
       ))}
-    </div>
-  )
-}
-
-function Avatar({ name, photoUrl }: { name: string; photoUrl?: string }) {
-  if (photoUrl) {
-    return <img src={photoUrl} alt={name} className="w-10 h-10 rounded-full object-cover flex-shrink-0" />
-  }
-  return (
-    <div className="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center text-primary-700 font-semibold text-sm flex-shrink-0">
-      {name.charAt(0).toUpperCase()}
     </div>
   )
 }
