@@ -23,7 +23,6 @@ public class SubmitQuestionnaireUseCase {
     @Inject SkillValidationRepository skillValidationRepository;
     @Inject ValidatorAssignmentRepository validatorAssignmentRepository;
     @Inject QuestionnaireRepository questionnaireRepository;
-    @Inject SendValidationNotificationUseCase sendNotification;
 
     public record Command(UUID validationId, UUID validatorId,
                           ValidationDecision decision, SkillLevel level, String reasoning) {}
@@ -49,7 +48,6 @@ public class SubmitQuestionnaireUseCase {
 
         if (cmd.decision() == ValidationDecision.APPROVED) {
             skillValidationRepository.updateStatus(cmd.validationId(), ValidationStatus.APPROVED, java.time.Instant.now());
-            sendNotification.execute(validation.userId(), validation.skill(), ValidationStatus.APPROVED);
         }
     }
 }

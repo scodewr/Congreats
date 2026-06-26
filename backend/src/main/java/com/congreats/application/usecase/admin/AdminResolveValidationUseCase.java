@@ -1,7 +1,6 @@
 package com.congreats.application.usecase.admin;
 
 import com.congreats.application.port.out.SkillValidationRepository;
-import com.congreats.application.usecase.SendValidationNotificationUseCase;
 import com.congreats.domain.exception.DomainException;
 import com.congreats.domain.exception.NotFoundException;
 import com.congreats.domain.model.SkillValidation;
@@ -18,7 +17,6 @@ import java.util.UUID;
 public class AdminResolveValidationUseCase {
 
     @Inject SkillValidationRepository skillValidationRepository;
-    @Inject SendValidationNotificationUseCase sendNotification;
 
     public record Command(UUID validationId, ValidationDecision decision) {}
 
@@ -34,6 +32,5 @@ public class AdminResolveValidationUseCase {
                 ? ValidationStatus.APPROVED : ValidationStatus.REJECTED;
 
         skillValidationRepository.updateStatus(cmd.validationId(), newStatus, Instant.now());
-        sendNotification.execute(validation.userId(), validation.skill(), newStatus);
     }
 }

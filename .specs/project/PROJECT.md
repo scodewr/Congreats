@@ -85,9 +85,6 @@ A plataforma opera em dois modos configuráveis via variável de ambiente (`CONG
 **v2.1 — Validation:**
 - Validação de Habilidades Reconhecidas (questionários, validadores, eventos)
 
-**v2.2 — Notifications:**
-- Notificações ao ser reconhecido, ao ter validação solicitada/aprovada (Email, WhatsApp, SMS)
-
 **v3.0 — API Integrations:**
 - Integração com APIs externas para gerar reconhecimentos dinâmicos (tasks fechadas, PRs mergeados, projetos entregues, etc.)
 
@@ -96,6 +93,11 @@ A plataforma opera em dois modos configuráveis via variável de ambiente (`CONG
 
 **v4.0 — Certifications of Excellence (Future):**
 - Área de certificações formais da própria plataforma — profissional reconhecido como referência em áreas criadas dentro do Congreats, emitidas a partir de condições objetivas (nível de troféu, validações aprovadas, eventos vencidos)
+
+**v4.1 — Notifications (Future):**
+- Notificações ao ser reconhecido, ao ter validação solicitada/aprovada
+- Canais: Email, WhatsApp, SMS
+- Preferências configuráveis por usuário (opt-in por canal e evento)
 
 **Explicitly out of scope:**
 - Integração com sistemas externos de RH (v1)

@@ -188,15 +188,6 @@ export interface IntegrationView {
   createdAt: string
 }
 
-export interface NotificationPreferencesView {
-  userId: string
-  emailEnabled: boolean
-  whatsappNumber?: string
-  whatsappEnabled: boolean
-  smsNumber?: string
-  smsEnabled: boolean
-}
-
 export interface EventView {
   id: string
   name: string
