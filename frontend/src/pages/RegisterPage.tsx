@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
+import Button from '../components/ui/Button'
+import Input from '../components/ui/Input'
 
 export default function RegisterPage() {
   const { register } = useAuth()
@@ -31,60 +33,68 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 w-full max-w-sm">
-        <h1 className="text-2xl font-bold text-gray-900 mb-1">Criar conta</h1>
-        <p className="text-sm text-gray-500 mb-6">Comece a reconhecer talentos</p>
+    <div className="min-h-screen bg-void flex items-center justify-center px-4">
+      <div className="w-full max-w-sm">
+        {/* Logo */}
+        <div className="text-center mb-8">
+          <span className="text-purple-500 font-bold text-3xl">◆</span>
+          <h1 className="brand-gradient font-bold text-2xl tracking-tight">Congreats</h1>
+          <p className="text-text-secondary text-sm mt-1">Crie sua conta</p>
+        </div>
 
-        {error && <p className="mb-4 text-sm text-red-600 bg-red-50 px-3 py-2 rounded">{error}</p>}
+        {/* Card */}
+        <div className="bg-surface border border-border-subtle rounded-2xl p-8">
+          {/* Error */}
+          {error && (
+            <div
+              className="mb-4 text-sm rounded-xl px-4 py-3"
+              style={{
+                color: '#E83050',
+                backgroundColor: 'rgba(232, 48, 80, 0.10)',
+                border: '1px solid rgba(232, 48, 80, 0.20)',
+              }}
+            >
+              {error}
+            </div>
+          )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Nome completo</label>
-            <input
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <Input
+              label="Nome completo"
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
             />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-            <input
+            <Input
+              label="Email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
             />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Senha</label>
-            <input
+            <Input
+              label="Senha"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
               minLength={8}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
             />
-          </div>
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-primary-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-primary-700 disabled:opacity-50"
-          >
-            {loading ? 'Criando...' : 'Criar conta'}
-          </button>
-        </form>
+            <Button type="submit" variant="primary" className="w-full" isLoading={loading}>
+              Criar conta
+            </Button>
+          </form>
 
-        <p className="mt-4 text-sm text-center text-gray-500">
-          Já tem conta?{' '}
-          <Link to="/login" className="text-primary-600 hover:underline">
-            Entrar
-          </Link>
-        </p>
+          {/* Link */}
+          <p className="mt-6 text-sm text-center text-text-secondary">
+            Já tem conta?{' '}
+            <Link to="/login" className="text-purple-300 hover:text-purple-400">
+              Entrar
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   )
