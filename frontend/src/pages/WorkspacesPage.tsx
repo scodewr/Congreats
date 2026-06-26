@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import { workspaceService } from '../services/workspaceService'
 import type { WorkspaceView } from '../types'
+import Button from '../components/ui/Button'
+import Input from '../components/ui/Input'
 
 export default function WorkspacesPage() {
   const [workspaces, setWorkspaces] = useState<WorkspaceView[]>([])
@@ -35,73 +38,84 @@ export default function WorkspacesPage() {
     }
   }
 
-  if (loading) return <div className="text-center text-gray-500 py-12">Carregando...</div>
+  if (loading) return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {Array.from({ length: 6 }).map((_, i) => <div key={i} className="shimmer rounded-2xl h-36" />)}
+    </div>
+  )
 
   return (
     <div>
+      {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Workspaces</h1>
-        <button
-          onClick={() => setShowForm(!showForm)}
-          className="bg-primary-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-700"
-        >
+        <h1 className="text-3xl font-bold text-text-primary">Workspaces</h1>
+        <Button variant="secondary" onClick={() => setShowForm(!showForm)}>
           + Novo workspace
-        </button>
+        </Button>
       </div>
 
+      {/* Form de criação */}
       {showForm && (
-        <form onSubmit={handleCreate} className="bg-white rounded-xl border border-gray-200 p-5 mb-6 space-y-3">
-          <h2 className="font-semibold text-gray-800">Criar workspace</h2>
-          {error && <p className="text-sm text-red-600 bg-red-50 px-3 py-2 rounded">{error}</p>}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Nome *</label>
-            <input
+        <div className="bg-surface border border-border-subtle rounded-2xl p-6 mb-6">
+          <h2 className="font-semibold text-text-primary mb-4">Criar workspace</h2>
+          {error && (
+            <p className="text-sm mb-4 px-4 py-3 rounded-xl" style={{ backgroundColor: 'rgba(232,48,80,0.1)', color: '#E83050' }}>
+              {error}
+            </p>
+          )}
+          <form onSubmit={handleCreate} className="space-y-4">
+            <Input
+              label="Nome *"
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={e => setName(e.target.value)}
               placeholder="ex: Equipe Frontend"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
             />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Descrição</label>
-            <input
+            <Input
+              label="Descrição"
               value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              onChange={e => setDescription(e.target.value)}
               placeholder="Opcional"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
             />
-          </div>
-          <div className="flex gap-2">
-            <button type="submit" disabled={creating}
-              className="bg-primary-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-700 disabled:opacity-50">
-              {creating ? 'Criando...' : 'Criar'}
-            </button>
-            <button type="button" onClick={() => setShowForm(false)}
-              className="px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-600 hover:border-gray-400">
-              Cancelar
-            </button>
-          </div>
-        </form>
+            <div className="flex gap-3">
+              <Button type="submit" variant="primary" isLoading={creating}>
+                Criar
+              </Button>
+              <Button type="button" variant="ghost" onClick={() => setShowForm(false)}>
+                Cancelar
+              </Button>
+            </div>
+          </form>
+        </div>
       )}
 
+      {/* Empty state */}
       {workspaces.length === 0 ? (
-        <p className="text-gray-500 text-center py-12">Você ainda não pertence a nenhum workspace.</p>
+        <div className="text-center py-16">
+          <p className="text-text-secondary">Você ainda não pertence a nenhum workspace.</p>
+          <p className="text-text-tertiary text-sm mt-1">Crie um para começar a colaborar.</p>
+        </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {workspaces.map((ws) => (
-            <Link
-              key={ws.id}
-              to={`/workspaces/${ws.id}`}
-              className="bg-white rounded-xl border border-gray-200 p-5 hover:border-primary-300 hover:shadow-sm transition-all"
-            >
-              <p className="font-semibold text-gray-900 truncate">{ws.name}</p>
-              {ws.description && (
-                <p className="text-sm text-gray-500 mt-1 line-clamp-2">{ws.description}</p>
-              )}
-              <div className="mt-3 flex items-center justify-between text-xs text-gray-400">
-                <span>{ws.memberCount} membro{ws.memberCount !== 1 ? 's' : ''}</span>
-                <span>por {ws.ownerName}</span>
-              </div>
+          {workspaces.map(ws => (
+            <Link key={ws.id} to={`/workspaces/${ws.id}`}>
+              <motion.div
+                whileHover={{ y: -4 }}
+                transition={{ duration: 0.2 }}
+                className="bg-surface border border-border-subtle rounded-2xl p-5 hover:border-purple-700/50 hover:shadow-purple-glow transition-shadow h-full"
+              >
+                {/* Ícone/inicial do workspace */}
+                <div className="w-10 h-10 rounded-xl bg-purple-900 flex items-center justify-center text-purple-300 font-bold text-lg mb-3">
+                  {ws.name.charAt(0).toUpperCase()}
+                </div>
+                <p className="font-semibold text-text-primary truncate">{ws.name}</p>
+                {ws.description && (
+                  <p className="text-sm text-text-secondary mt-1 line-clamp-2">{ws.description}</p>
+                )}
+                <div className="mt-3 flex items-center justify-between text-xs text-text-tertiary">
+                  <span>{ws.memberCount} membro{ws.memberCount !== 1 ? 's' : ''}</span>
+                  <span>por {ws.ownerName}</span>
+                </div>
+              </motion.div>
             </Link>
           ))}
         </div>
