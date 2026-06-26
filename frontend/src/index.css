@@ -1,3 +1,76 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: #080809;
+    color: #F0F0F5;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Dark scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #111114;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #3A3A48;
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #4A1090;
+  }
+
+  /* Select options dark theme */
+  select option {
+    background-color: #1A1A1F;
+    color: #F0F0F5;
+  }
+}
+
+@layer utilities {
+  /* Shimmer animation utility */
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      #1A1A1F 25%,
+      #22222A 50%,
+      #1A1A1F 75%
+    );
+    background-size: 400% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+
+  /* Brand gradient text */
+  .brand-gradient {
+    background: linear-gradient(90deg, #B87FEF 0%, #D04060 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Gold metallic gradient */
+  .gold-shimmer {
+    background: linear-gradient(135deg, #C9A84C 0%, #F5E29A 50%, #C9A84C 100%);
+  }
+}
