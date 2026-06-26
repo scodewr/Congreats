@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { adminService } from '../../services/adminService'
 import { recognitionService } from '../../services/recognitionService'
 import type { CampaignView, Category } from '../../types'
+import Button from '../../components/ui/Button'
 
 export default function AdminCampaignsPage() {
   const [campaigns, setCampaigns] = useState<CampaignView[]>([])
@@ -48,86 +49,85 @@ export default function AdminCampaignsPage() {
     }
   }
 
-  if (loading) return <div className="text-center text-gray-500 py-12">Carregando...</div>
+  if (loading) return <div className="text-center text-text-secondary py-12">Carregando...</div>
 
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Campanhas</h1>
-        <button onClick={() => setShowForm(!showForm)}
-          className="bg-primary-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-700">
+        <h1 className="text-2xl font-bold text-text-primary">Campanhas</h1>
+        <Button variant="primary" size="sm" onClick={() => setShowForm(!showForm)}>
           + Nova campanha
-        </button>
+        </Button>
       </div>
 
       {showForm && (
-        <form onSubmit={handleCreate} className="bg-white rounded-xl border border-gray-200 p-5 mb-6 space-y-3">
-          <h2 className="font-semibold text-gray-800">Criar campanha</h2>
-          {error && <p className="text-sm text-red-600 bg-red-50 px-3 py-2 rounded">{error}</p>}
+        <form onSubmit={handleCreate} className="bg-surface rounded-2xl border border-border-subtle p-6 mb-6 space-y-3">
+          <h2 className="font-semibold text-text-primary">Criar campanha</h2>
+          {error && (
+            <p className="text-sm px-3 py-2 rounded" style={{ color: 'rgb(232,48,80)', background: 'rgba(232,48,80,0.1)' }}>{error}</p>
+          )}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Nome *</label>
+              <label className="block text-sm font-medium text-text-secondary mb-1">Nome *</label>
               <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required
                 placeholder="ex: Semana de Inovação"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500" />
+                className="w-full bg-elevated border border-border-dim rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Categoria *</label>
+              <label className="block text-sm font-medium text-text-secondary mb-1">Categoria *</label>
               <select value={form.categoryId} onChange={(e) => setForm({ ...form, categoryId: e.target.value })} required
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">
+                className="w-full bg-elevated border border-border-dim rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20">
                 <option value="">Selecione...</option>
                 {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Início *</label>
+              <label className="block text-sm font-medium text-text-secondary mb-1">Início *</label>
               <input type="datetime-local" value={form.startsAt} onChange={(e) => setForm({ ...form, startsAt: e.target.value })} required
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500" />
+                className="w-full bg-elevated border border-border-dim rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Fim *</label>
+              <label className="block text-sm font-medium text-text-secondary mb-1">Fim *</label>
               <input type="datetime-local" value={form.endsAt} onChange={(e) => setForm({ ...form, endsAt: e.target.value })} required
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500" />
+                className="w-full bg-elevated border border-border-dim rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20" />
             </div>
             <div className="sm:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Descrição</label>
+              <label className="block text-sm font-medium text-text-secondary mb-1">Descrição</label>
               <input value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })}
                 placeholder="Opcional"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500" />
+                className="w-full bg-elevated border border-border-dim rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20" />
             </div>
           </div>
           <div className="flex gap-2">
-            <button type="submit" disabled={creating}
-              className="bg-primary-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-700 disabled:opacity-50">
+            <Button type="submit" variant="primary" size="sm" disabled={creating} isLoading={creating}>
               {creating ? 'Criando...' : 'Criar'}
-            </button>
-            <button type="button" onClick={() => setShowForm(false)}
-              className="px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-600 hover:border-gray-400">
+            </Button>
+            <Button type="button" variant="secondary" size="sm" onClick={() => setShowForm(false)}>
               Cancelar
-            </button>
+            </Button>
           </div>
         </form>
       )}
 
       {campaigns.length === 0 ? (
-        <p className="text-center text-gray-500 py-12">Nenhuma campanha ativa no momento.</p>
+        <p className="text-text-secondary text-center py-12">Nenhuma campanha ativa no momento.</p>
       ) : (
         <div className="flex flex-col gap-4">
           {campaigns.map((c) => (
-            <div key={c.id} className="bg-white rounded-xl border border-primary-200 p-5">
+            <div key={c.id} className="bg-surface rounded-2xl border border-border-subtle p-5">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="font-semibold text-gray-900">{c.name}</p>
-                  {c.description && <p className="text-sm text-gray-500 mt-0.5">{c.description}</p>}
-                  <span className="inline-block mt-1 text-xs bg-primary-50 text-primary-700 px-2 py-0.5 rounded-full">
+                  <p className="font-semibold text-text-primary">{c.name}</p>
+                  {c.description && <p className="text-sm text-text-tertiary mt-0.5">{c.description}</p>}
+                  <span className="inline-block mt-1 text-xs text-purple-300 bg-purple-500/15 px-2 py-0.5 rounded-full">
                     {c.categoryName}
                   </span>
                 </div>
-                <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-medium flex-shrink-0">
+                <span className="text-xs text-success bg-success/10 px-2 py-1 rounded-full font-medium flex-shrink-0">
                   Ativa
                 </span>
               </div>
-              <p className="mt-2 text-xs text-gray-400">
+              <p className="mt-2 text-xs text-text-tertiary">
                 {new Date(c.startsAt).toLocaleDateString('pt-BR')} até {new Date(c.endsAt).toLocaleDateString('pt-BR')}
               </p>
             </div>

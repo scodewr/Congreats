@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { validationService } from '../../services/validationService'
 import { profileService } from '../../services/profileService'
 import type { ProfileView, SkillValidationView } from '../../types'
+import Button from '../../components/ui/Button'
 
 type TabStatus = 'PENDING' | 'IN_PROGRESS' | 'APPROVED' | 'REJECTED'
 
@@ -44,7 +45,7 @@ function AssignForm({ validationId, onAssign }: AssignFormProps) {
 
   if (!open) {
     return (
-      <button onClick={() => setOpen(true)} className="text-xs text-blue-600 hover:underline">
+      <button onClick={() => setOpen(true)} className="text-xs text-purple-300 hover:text-purple-200 font-medium">
         + Atribuir validador
       </button>
     )
@@ -55,20 +56,19 @@ function AssignForm({ validationId, onAssign }: AssignFormProps) {
       <select
         value={validatorId}
         onChange={e => setValidatorId(e.target.value)}
-        className="flex-1 border border-gray-300 rounded px-2 py-1 text-sm"
+        className="flex-1 bg-elevated border border-border-dim rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20"
       >
         <option value="">Selecione…</option>
         {users.map(u => (
           <option key={u.userId} value={u.userId}>{u.name}</option>
         ))}
       </select>
-      <button onClick={handleAssign} disabled={!validatorId || submitting}
-        className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 disabled:opacity-50">
+      <Button variant="primary" size="sm" onClick={handleAssign} disabled={!validatorId || submitting}>
         Atribuir
-      </button>
-      <button onClick={() => setOpen(false)} className="px-3 py-1 text-sm text-gray-500 hover:text-gray-700">
+      </Button>
+      <Button variant="ghost" size="sm" onClick={() => setOpen(false)}>
         Cancelar
-      </button>
+      </Button>
     </div>
   )
 }
@@ -96,19 +96,19 @@ export default function AdminValidationsPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Validações de Habilidades</h1>
-        <span className="text-sm text-gray-500">{total} resultado(s)</span>
+        <h1 className="text-2xl font-bold text-text-primary">Validações de Habilidades</h1>
+        <span className="text-sm text-text-tertiary">{total} resultado(s)</span>
       </div>
 
-      <div className="flex gap-1 border-b border-gray-200">
+      <div className="flex gap-1 border-b border-border-subtle">
         {STATUS_TABS.map(t => (
           <button
             key={t.value}
             onClick={() => setTab(t.value)}
             className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
               tab === t.value
-                ? 'border-primary-600 text-primary-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700'
+                ? 'border-purple-500 text-purple-300'
+                : 'border-transparent text-text-tertiary hover:text-text-secondary'
             }`}
           >
             {t.label}
@@ -117,45 +117,47 @@ export default function AdminValidationsPage() {
       </div>
 
       {loading ? (
-        <div className="text-center text-gray-500 py-12">Carregando...</div>
+        <div className="text-center text-text-secondary py-12">Carregando...</div>
       ) : items.length === 0 ? (
-        <div className="text-center text-gray-500 py-12">Nenhuma validação encontrada.</div>
+        <div className="text-center text-text-secondary py-12">Nenhuma validação encontrada.</div>
       ) : (
         <div className="space-y-4">
           {items.map(v => (
-            <div key={v.id} className="bg-white rounded-xl border border-gray-200 p-6 space-y-3">
+            <div key={v.id} className="bg-surface rounded-2xl border border-border-subtle p-6 space-y-3">
               <div className="flex items-start justify-between">
                 <div>
-                  <h3 className="font-semibold text-gray-900">{v.skill}</h3>
-                  <p className="text-sm text-gray-500">Profissional: {v.userName}</p>
-                  <p className="text-xs text-gray-400">
+                  <h3 className="font-semibold text-text-primary">{v.skill}</h3>
+                  <p className="text-sm text-text-secondary">Profissional: {v.userName}</p>
+                  <p className="text-xs text-text-tertiary">
                     {new Date(v.requestedAt).toLocaleDateString('pt-BR')}
                   </p>
                 </div>
                 {(tab === 'PENDING' || tab === 'IN_PROGRESS') && (
                   <div className="flex gap-2">
-                    <button
+                    <Button
+                      variant="primary"
+                      size="sm"
                       onClick={() => handleResolve(v.id, 'APPROVED')}
-                      className="px-3 py-1.5 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700"
                     >
                       Aprovar
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      size="sm"
                       onClick={() => handleResolve(v.id, 'REJECTED')}
-                      className="px-3 py-1.5 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700"
                     >
                       Rejeitar
-                    </button>
+                    </Button>
                   </div>
                 )}
               </div>
 
               {v.assignments.length > 0 && (
                 <div>
-                  <p className="text-xs font-medium text-gray-500 mb-1">Validadores</p>
+                  <p className="text-xs font-medium text-text-tertiary mb-1">Validadores</p>
                   <div className="flex flex-wrap gap-2">
                     {v.assignments.map(a => (
-                      <span key={a.id} className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full">
+                      <span key={a.id} className="text-xs bg-overlay text-text-secondary px-2 py-1 rounded-full">
                         {a.validatorName}
                       </span>
                     ))}
@@ -169,17 +171,19 @@ export default function AdminValidationsPage() {
 
               {v.questionnaires.length > 0 && (
                 <div className="space-y-2">
-                  <p className="text-xs font-medium text-gray-500">Avaliações</p>
+                  <p className="text-xs font-medium text-text-tertiary">Avaliações</p>
                   {v.questionnaires.map(q => (
-                    <div key={q.id} className="bg-gray-50 rounded-lg p-3 text-sm flex items-start justify-between">
+                    <div key={q.id} className="bg-elevated rounded-xl p-3 text-sm flex items-start justify-between">
                       <div>
-                        <span className="font-medium text-gray-700">{q.validatorName}</span>
-                        <span className="text-gray-400 mx-1">·</span>
-                        <span className="text-gray-600">{q.levelLabel}</span>
-                        {q.reasoning && <p className="text-xs text-gray-500 mt-1 italic">"{q.reasoning}"</p>}
+                        <span className="font-medium text-text-secondary">{q.validatorName}</span>
+                        <span className="text-text-tertiary mx-1">·</span>
+                        <span className="text-text-secondary">{q.levelLabel}</span>
+                        {q.reasoning && <p className="text-xs text-text-tertiary mt-1 italic">"{q.reasoning}"</p>}
                       </div>
                       <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
-                        q.decision === 'APPROVED' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
+                        q.decision === 'APPROVED'
+                          ? 'text-success bg-success/10'
+                          : 'text-error bg-error/10'
                       }`}>
                         {q.decision === 'APPROVED' ? 'Aprovado' : 'Rejeitado'}
                       </span>

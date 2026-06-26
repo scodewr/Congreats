@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { integrationService } from '../../services/integrationService'
 import type { IntegrationView } from '../../types'
+import Button from '../../components/ui/Button'
 
 const PLATFORMS = [
   { value: 'GITHUB', label: 'GitHub' },
@@ -68,103 +69,95 @@ export default function AdminIntegrationsPage() {
     setTimeout(() => setCopiedId(null), 2000)
   }
 
-  if (loading) return <div className="p-6 text-gray-500">Carregando...</div>
+  if (loading) return <div className="text-center text-text-secondary py-12">Carregando...</div>
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
+    <div className="max-w-4xl mx-auto">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Integrações</h1>
-        <button
-          onClick={() => setShowForm(!showForm)}
-          className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700"
-        >
+        <h1 className="text-2xl font-bold text-text-primary">Integrações</h1>
+        <Button variant="primary" size="sm" onClick={() => setShowForm(!showForm)}>
           + Nova Integração
-        </button>
+        </Button>
       </div>
 
       {error && (
-        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">{error}</div>
+        <div className="mb-4 p-3 rounded-xl text-sm" style={{ color: 'rgb(232,48,80)', background: 'rgba(232,48,80,0.1)', border: '1px solid rgba(232,48,80,0.25)' }}>{error}</div>
       )}
 
       {showForm && (
-        <form onSubmit={handleCreate} className="mb-6 bg-white border border-gray-200 rounded-lg p-4 space-y-3">
-          <h2 className="font-semibold text-gray-800">Nova Integração</h2>
+        <form onSubmit={handleCreate} className="mb-6 bg-surface border border-border-subtle rounded-2xl p-6 space-y-3">
+          <h2 className="font-semibold text-text-primary">Nova Integração</h2>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Plataforma</label>
+              <label className="block text-xs font-medium text-text-secondary mb-1">Plataforma</label>
               <select
                 value={form.platform}
                 onChange={e => setForm(f => ({ ...f, platform: e.target.value as typeof form.platform }))}
-                className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full bg-elevated border border-border-dim rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20"
               >
                 {PLATFORMS.map(p => <option key={p.value} value={p.value}>{p.label}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Nome</label>
+              <label className="block text-xs font-medium text-text-secondary mb-1">Nome</label>
               <input
                 required
                 value={form.name}
                 onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
                 placeholder="ex: Repo Backend"
-                className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full bg-elevated border border-border-dim rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20"
               />
             </div>
           </div>
           <div className="flex gap-3">
-            <button type="submit" disabled={creating}
-              className="bg-indigo-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-indigo-700 disabled:opacity-50">
+            <Button type="submit" variant="primary" size="sm" disabled={creating} isLoading={creating}>
               {creating ? 'Criando...' : 'Criar'}
-            </button>
-            <button type="button" onClick={() => setShowForm(false)}
-              className="text-gray-500 text-sm hover:text-gray-700">
+            </Button>
+            <Button type="button" variant="ghost" size="sm" onClick={() => setShowForm(false)}>
               Cancelar
-            </button>
+            </Button>
           </div>
         </form>
       )}
 
       {integrations.length === 0 ? (
-        <p className="text-gray-500 text-sm">Nenhuma integração configurada ainda.</p>
+        <p className="text-text-secondary text-sm text-center py-8">Nenhuma integração configurada ainda.</p>
       ) : (
         <div className="space-y-3">
           {integrations.map(i => (
             <div key={i.id}
-              className={`bg-white border rounded-lg p-4 ${!i.active ? 'opacity-50' : 'border-gray-200'}`}>
+              className={`bg-surface border border-border-subtle rounded-2xl p-5 ${!i.active ? 'opacity-50' : ''}`}>
               <div className="flex items-start justify-between">
                 <div>
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="font-semibold text-gray-900">{i.name}</span>
-                    <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded">{i.platformLabel}</span>
+                    <span className="font-semibold text-text-primary">{i.name}</span>
+                    <span className="text-xs bg-overlay text-text-secondary px-2 py-0.5 rounded-full">{i.platformLabel}</span>
                     {!i.active && (
-                      <span className="text-xs bg-red-100 text-red-600 px-2 py-0.5 rounded">Desativada</span>
+                      <span className="text-xs px-2 py-0.5 rounded-full" style={{ color: 'rgb(232,48,80)', background: 'rgba(232,48,80,0.1)' }}>Desativada</span>
                     )}
                   </div>
                   {i.categoryName && (
-                    <p className="text-xs text-gray-500">Categoria: {i.categoryName}</p>
+                    <p className="text-xs text-text-tertiary">Categoria: {i.categoryName}</p>
                   )}
                   {i.workspaceName && (
-                    <p className="text-xs text-gray-500">Workspace: {i.workspaceName}</p>
+                    <p className="text-xs text-text-tertiary">Workspace: {i.workspaceName}</p>
                   )}
                   <div className="mt-2 flex items-center gap-2">
-                    <code className="text-xs bg-gray-50 border border-gray-200 rounded px-2 py-1 text-gray-700 font-mono truncate max-w-xs">
+                    <code className="text-xs bg-elevated border border-border-subtle rounded-lg px-2 py-1 text-text-secondary font-mono truncate max-w-xs">
                       {integrationService.webhookUrl(i.platform, i.webhookSecret)}
                     </code>
                     <button
                       onClick={() => copyUrl(i)}
-                      className="text-xs text-indigo-600 hover:text-indigo-800"
+                      className="text-xs text-purple-300 hover:text-purple-200"
                     >
                       {copiedId === i.id ? 'Copiado!' : 'Copiar URL'}
                     </button>
                   </div>
                 </div>
                 {i.active && (
-                  <button
-                    onClick={() => handleDeactivate(i.id)}
-                    className="text-xs text-red-500 hover:text-red-700 ml-4 shrink-0"
-                  >
+                  <Button variant="destructive" size="sm" onClick={() => handleDeactivate(i.id)}>
                     Desativar
-                  </button>
+                  </Button>
                 )}
               </div>
             </div>

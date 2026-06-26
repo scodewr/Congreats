@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { adminService } from '../../services/adminService'
 import type { PageResult, UserAdminView } from '../../types'
+import Button from '../../components/ui/Button'
 
 export default function AdminUsersPage() {
   const [result, setResult] = useState<PageResult<UserAdminView> | null>(null)
@@ -44,99 +45,101 @@ export default function AdminUsersPage() {
     }
   }
 
-  if (loading) return <div className="text-center text-gray-500 py-12">Carregando...</div>
+  if (loading) return <div className="text-center text-text-secondary py-12">Carregando...</div>
 
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Usuários</h1>
-        <button onClick={() => setShowForm(!showForm)}
-          className="bg-primary-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-700">
+        <h1 className="text-2xl font-bold text-text-primary">Usuários</h1>
+        <Button variant="primary" size="sm" onClick={() => setShowForm(!showForm)}>
           + Novo usuário
-        </button>
+        </Button>
       </div>
 
       {createdPassword && (
-        <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-6">
-          <p className="text-sm text-green-800 font-medium">Usuário criado com sucesso!</p>
-          <p className="text-sm text-green-700 mt-1">
-            Senha temporária: <code className="font-mono bg-green-100 px-2 py-0.5 rounded">{createdPassword}</code>
+        <div className="border rounded-xl p-4 mb-6" style={{ background: 'rgba(34,197,94,0.08)', borderColor: 'rgba(34,197,94,0.25)' }}>
+          <p className="text-sm font-medium" style={{ color: 'rgb(134,239,172)' }}>Usuário criado com sucesso!</p>
+          <p className="text-sm mt-1" style={{ color: 'rgb(134,239,172)' }}>
+            Senha temporária: <code className="font-mono px-2 py-0.5 rounded" style={{ background: 'rgba(34,197,94,0.15)' }}>{createdPassword}</code>
           </p>
-          <button onClick={() => setCreatedPassword('')} className="text-xs text-green-600 mt-2 underline">Fechar</button>
+          <button onClick={() => setCreatedPassword('')} className="text-xs mt-2 underline" style={{ color: 'rgb(134,239,172)' }}>Fechar</button>
         </div>
       )}
 
       {showForm && (
-        <form onSubmit={handleCreate} className="bg-white rounded-xl border border-gray-200 p-5 mb-6 space-y-3">
-          <h2 className="font-semibold text-gray-800">Criar usuário</h2>
-          {error && <p className="text-sm text-red-600 bg-red-50 px-3 py-2 rounded">{error}</p>}
+        <form onSubmit={handleCreate} className="bg-surface rounded-2xl border border-border-subtle p-6 mb-6 space-y-3">
+          <h2 className="font-semibold text-text-primary">Criar usuário</h2>
+          {error && (
+            <p className="text-sm px-3 py-2 rounded" style={{ color: 'rgb(232,48,80)', background: 'rgba(232,48,80,0.1)' }}>{error}</p>
+          )}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Nome *</label>
+              <label className="block text-sm font-medium text-text-secondary mb-1">Nome *</label>
               <input value={name} onChange={(e) => setName(e.target.value)} required
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500" />
+                className="w-full bg-elevated border border-border-dim rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">E-mail *</label>
+              <label className="block text-sm font-medium text-text-secondary mb-1">E-mail *</label>
               <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500" />
+                className="w-full bg-elevated border border-border-dim rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Perfil</label>
+              <label className="block text-sm font-medium text-text-secondary mb-1">Perfil</label>
               <select value={role} onChange={(e) => setRole(e.target.value as 'ADMIN' | 'USER')}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">
+                className="w-full bg-elevated border border-border-dim rounded-xl px-3 py-2 text-sm text-text-primary focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20">
                 <option value="USER">Usuário</option>
                 <option value="ADMIN">Administrador</option>
               </select>
             </div>
           </div>
           <div className="flex gap-2">
-            <button type="submit" disabled={creating}
-              className="bg-primary-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-700 disabled:opacity-50">
+            <Button type="submit" variant="primary" size="sm" disabled={creating} isLoading={creating}>
               {creating ? 'Criando...' : 'Criar'}
-            </button>
-            <button type="button" onClick={() => setShowForm(false)}
-              className="px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-600 hover:border-gray-400">
+            </Button>
+            <Button type="button" variant="secondary" size="sm" onClick={() => setShowForm(false)}>
               Cancelar
-            </button>
+            </Button>
           </div>
         </form>
       )}
 
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-        <table className="w-full text-sm">
-          <thead className="bg-gray-50 border-b border-gray-200">
-            <tr>
-              <th className="text-left px-4 py-3 text-gray-600 font-medium">Nome</th>
-              <th className="text-left px-4 py-3 text-gray-600 font-medium">E-mail</th>
-              <th className="text-left px-4 py-3 text-gray-600 font-medium">Perfil</th>
-              <th className="text-left px-4 py-3 text-gray-600 font-medium">Status</th>
+      <div className="bg-surface border border-border-subtle rounded-2xl overflow-hidden">
+        <table className="w-full">
+          <thead>
+            <tr className="bg-elevated border-b border-border-subtle">
+              <th className="px-4 py-3 text-left text-xs font-semibold text-text-secondary uppercase tracking-wide">Nome</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-text-secondary uppercase tracking-wide">E-mail</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-text-secondary uppercase tracking-wide">Perfil</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-text-secondary uppercase tracking-wide">Status</th>
               <th className="px-4 py-3"></th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100">
+          <tbody>
             {result?.content.map((u) => (
-              <tr key={u.id} className="hover:bg-gray-50">
-                <td className="px-4 py-3 font-medium text-gray-900">{u.name}</td>
-                <td className="px-4 py-3 text-gray-500">{u.email}</td>
+              <tr key={u.id} className="border-b border-border-subtle last:border-0 hover:bg-overlay">
+                <td className="px-4 py-3 text-sm font-medium text-text-primary">{u.name}</td>
+                <td className="px-4 py-3 text-sm text-text-tertiary">{u.email}</td>
                 <td className="px-4 py-3">
                   <span className={`inline-block text-xs px-2 py-0.5 rounded-full font-medium ${
-                    u.role === 'ADMIN' ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-600'}`}>
+                    u.role === 'ADMIN'
+                      ? 'text-purple-300 bg-purple-500/15'
+                      : 'text-text-tertiary bg-overlay'}`}>
                     {u.role === 'ADMIN' ? 'Admin' : 'Usuário'}
                   </span>
                 </td>
                 <td className="px-4 py-3">
                   <span className={`inline-block text-xs px-2 py-0.5 rounded-full ${
-                    u.active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                    u.active
+                      ? 'text-success bg-success/10'
+                      : 'text-error bg-error/10'}`}>
                     {u.active ? 'Ativo' : 'Inativo'}
                   </span>
                 </td>
                 <td className="px-4 py-3 text-right">
                   {u.active && (
-                    <button onClick={() => handleDeactivate(u.id)}
-                      className="text-xs text-red-600 hover:text-red-800 font-medium">
+                    <Button variant="destructive" size="sm" onClick={() => handleDeactivate(u.id)}>
                       Desativar
-                    </button>
+                    </Button>
                   )}
                 </td>
               </tr>
@@ -144,14 +147,14 @@ export default function AdminUsersPage() {
           </tbody>
         </table>
         {result && result.total === 0 && (
-          <p className="text-center text-gray-500 py-8">Nenhum usuário encontrado.</p>
+          <p className="text-text-secondary text-center py-8">Nenhum usuário encontrado.</p>
         )}
       </div>
 
       {result && result.hasNext && (
         <div className="mt-4 text-center">
           <button onClick={() => load(result.page + 1)}
-            className="text-sm text-primary-600 hover:text-primary-800 font-medium">
+            className="text-sm text-purple-300 hover:text-purple-200 font-medium">
             Carregar mais
           </button>
         </div>
