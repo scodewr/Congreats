@@ -45,8 +45,8 @@ public class RecognitionRepositoryJPA implements PanacheRepository<RecognitionEn
     @Override
     public Map<String, Long> countSkillsByRecognizedId(UUID userId) {
         List<Object[]> rows = em.createQuery(
-                "SELECT rs.skill, COUNT(rs.skill) FROM RecognitionEntity r JOIN r.skills rs " +
-                "WHERE r.recognizedId = :uid GROUP BY rs.skill ORDER BY COUNT(rs.skill) DESC",
+                "SELECT rs, COUNT(rs) FROM RecognitionEntity r JOIN r.skills rs " +
+                "WHERE r.recognizedId = :uid GROUP BY rs ORDER BY COUNT(rs) DESC",
                 Object[].class)
                 .setParameter("uid", userId)
                 .getResultList();

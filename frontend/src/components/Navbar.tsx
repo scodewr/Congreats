@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { AnimatePresence, motion } from 'framer-motion'
 import {
   LayoutDashboard,
   Compass,
@@ -16,6 +17,8 @@ import {
   ChevronDown,
   LogOut,
   User,
+  Menu,
+  X,
 } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 import Avatar from './ui/Avatar'
@@ -66,6 +69,11 @@ export default function Navbar() {
   const navigate = useNavigate()
   const adminDropdown = useDropdown()
   const userDropdown = useDropdown()
+  const [mobileOpen, setMobileOpen] = useState(false)
+
+  useEffect(() => {
+    setMobileOpen(false)
+  }, [location.pathname])
 
   const isActive = (to: string) => {
     if (to === '/dashboard') return location.pathname === '/dashboard'
@@ -78,121 +86,227 @@ export default function Navbar() {
   }
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-surface border-b border-border-subtle backdrop-blur-sm h-16">
-      <div className="max-w-7xl mx-auto px-6 h-full flex items-center justify-between gap-6">
+    <>
+      <header className="fixed top-0 left-0 right-0 z-50 bg-surface border-b border-border-subtle backdrop-blur-sm h-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-full flex items-center justify-between gap-4">
 
-        {/* Logo */}
-        <Link to="/dashboard" className="flex items-center gap-2 shrink-0">
-          <span className="text-purple-500 font-bold text-xl">◆</span>
-          <span className="brand-gradient font-bold text-xl tracking-tight">Congreats</span>
-        </Link>
+          {/* Logo */}
+          <Link to="/dashboard" className="flex items-center gap-2 shrink-0">
+            <span className="text-purple-500 font-bold text-xl leading-none">◆</span>
+            <div className="flex flex-col leading-none gap-0.5">
+              <span className="brand-gradient font-bold text-xl tracking-tight leading-none">Congreats</span>
+              <span className="text-text-tertiary text-[10px] italic tracking-wide leading-none">Drived by Orbix</span>
+            </div>
+          </Link>
 
-        {/* Nav items */}
-        <nav className="flex items-center gap-1">
-          {navItems.map(item => (
-            <Link
-              key={item.to}
-              to={item.to}
-              className={[
-                'flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium transition-colors duration-150',
-                isActive(item.to)
-                  ? 'bg-purple-900 text-purple-300 border border-purple-700'
-                  : 'text-text-secondary hover:text-text-primary hover:bg-overlay',
-              ].join(' ')}
-            >
-              {item.icon}
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-
-        {/* Right side */}
-        <div className="flex items-center gap-2 shrink-0">
-
-          {/* Admin dropdown */}
-          {user?.role === 'ADMIN' && (
-            <div className="relative" ref={adminDropdown.ref}>
-              <button
-                onClick={() => adminDropdown.setOpen(o => !o)}
+          {/* Nav items — md+ only */}
+          <nav className="hidden md:flex items-center gap-0.5 flex-1 justify-center">
+            {navItems.map(item => (
+              <Link
+                key={item.to}
+                to={item.to}
+                title={item.label}
                 className={[
-                  'flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium transition-colors duration-150',
-                  location.pathname.startsWith('/admin')
-                    ? 'bg-wine-900 text-wine-300 border border-wine-700'
+                  'flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium transition-colors duration-150',
+                  isActive(item.to)
+                    ? 'bg-purple-900 text-purple-300 border border-purple-700'
                     : 'text-text-secondary hover:text-text-primary hover:bg-overlay',
                 ].join(' ')}
               >
-                <Shield size={16} />
-                Admin
-                <ChevronDown
-                  size={14}
-                  className={`transition-transform duration-200 ${adminDropdown.open ? 'rotate-180' : ''}`}
-                />
-              </button>
+                {item.icon}
+                <span className="hidden lg:inline">{item.label}</span>
+              </Link>
+            ))}
+          </nav>
 
-              {adminDropdown.open && (
-                <div className="absolute right-0 top-full mt-2 w-48 bg-elevated border border-border-subtle rounded-xl shadow-lg overflow-hidden z-50">
-                  {adminItems.map(item => (
+          {/* Right side — md+ only */}
+          <div className="hidden md:flex items-center gap-2 shrink-0">
+
+            {/* Admin dropdown */}
+            {user?.role === 'ADMIN' && (
+              <div className="relative" ref={adminDropdown.ref}>
+                <button
+                  onClick={() => adminDropdown.setOpen(o => !o)}
+                  title="Admin"
+                  className={[
+                    'flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium transition-colors duration-150',
+                    location.pathname.startsWith('/admin')
+                      ? 'bg-wine-900 text-wine-300 border border-wine-700'
+                      : 'text-text-secondary hover:text-text-primary hover:bg-overlay',
+                  ].join(' ')}
+                >
+                  <Shield size={16} />
+                  <span className="hidden lg:inline">Admin</span>
+                  <ChevronDown
+                    size={14}
+                    className={`transition-transform duration-200 ${adminDropdown.open ? 'rotate-180' : ''}`}
+                  />
+                </button>
+
+                {adminDropdown.open && (
+                  <div className="absolute right-0 top-full mt-2 w-48 bg-elevated border border-border-subtle rounded-xl shadow-lg overflow-hidden z-50">
+                    {adminItems.map(item => (
+                      <Link
+                        key={item.to}
+                        to={item.to}
+                        onClick={() => adminDropdown.setOpen(false)}
+                        className={[
+                          'flex items-center gap-3 px-4 py-2.5 text-sm transition-colors duration-150',
+                          location.pathname === item.to
+                            ? 'bg-wine-900 text-wine-300'
+                            : 'text-text-secondary hover:text-text-primary hover:bg-overlay',
+                        ].join(' ')}
+                      >
+                        {item.icon}
+                        {item.label}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* User avatar dropdown */}
+            {user && (
+              <div className="relative" ref={userDropdown.ref}>
+                <button
+                  onClick={() => userDropdown.setOpen(o => !o)}
+                  className="flex items-center gap-2 hover:opacity-80 transition-opacity duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 rounded-full"
+                >
+                  <Avatar src={undefined} name={user.name} size="md" border="default" />
+                  <ChevronDown
+                    size={14}
+                    className={`text-text-secondary transition-transform duration-200 ${userDropdown.open ? 'rotate-180' : ''}`}
+                  />
+                </button>
+
+                {userDropdown.open && (
+                  <div className="absolute right-0 top-full mt-2 w-48 bg-elevated border border-border-subtle rounded-xl shadow-lg overflow-hidden z-50">
+                    <div className="px-4 py-3 border-b border-border-subtle">
+                      <p className="text-sm font-medium text-text-primary truncate">{user.name}</p>
+                      <p className="text-xs text-text-secondary truncate">{user.email}</p>
+                    </div>
                     <Link
-                      key={item.to}
-                      to={item.to}
-                      onClick={() => adminDropdown.setOpen(false)}
-                      className={[
-                        'flex items-center gap-3 px-4 py-2.5 text-sm transition-colors duration-150',
-                        location.pathname === item.to
-                          ? 'bg-wine-900 text-wine-300'
-                          : 'text-text-secondary hover:text-text-primary hover:bg-overlay',
-                      ].join(' ')}
+                      to={`/profile/${user.id}`}
+                      onClick={() => userDropdown.setOpen(false)}
+                      className="flex items-center gap-3 px-4 py-2.5 text-sm text-text-secondary hover:text-text-primary hover:bg-overlay transition-colors duration-150"
                     >
-                      {item.icon}
-                      {item.label}
+                      <User size={14} />
+                      Ver Perfil
                     </Link>
-                  ))}
-                </div>
+                    <button
+                      onClick={handleLogout}
+                      className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-text-secondary hover:text-error hover:bg-overlay transition-colors duration-150"
+                    >
+                      <LogOut size={14} />
+                      Sair
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Hamburger — mobile only */}
+          <button
+            className="md:hidden flex items-center justify-center w-9 h-9 rounded-xl text-text-secondary hover:text-text-primary hover:bg-overlay transition-colors duration-150"
+            onClick={() => setMobileOpen(o => !o)}
+            aria-label={mobileOpen ? 'Fechar menu' : 'Abrir menu'}
+          >
+            {mobileOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </div>
+      </header>
+
+      {/* Mobile menu overlay */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.18, ease: 'easeOut' }}
+            className="fixed top-16 left-0 right-0 z-40 bg-surface border-b border-border-subtle shadow-xl md:hidden overflow-y-auto max-h-[calc(100vh-4rem)]"
+          >
+            <div className="px-4 py-3">
+
+              {/* Nav items */}
+              <nav className="space-y-1">
+                {navItems.map(item => (
+                  <Link
+                    key={item.to}
+                    to={item.to}
+                    className={[
+                      'flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors duration-150',
+                      isActive(item.to)
+                        ? 'bg-purple-900 text-purple-300 border border-purple-700'
+                        : 'text-text-secondary hover:text-text-primary hover:bg-overlay',
+                    ].join(' ')}
+                  >
+                    {item.icon}
+                    {item.label}
+                  </Link>
+                ))}
+              </nav>
+
+              {/* Admin section */}
+              {user?.role === 'ADMIN' && (
+                <>
+                  <div className="border-t border-border-subtle my-3" />
+                  <p className="text-xs text-text-tertiary px-4 mb-1 uppercase tracking-wider">Admin</p>
+                  <nav className="space-y-1">
+                    {adminItems.map(item => (
+                      <Link
+                        key={item.to}
+                        to={item.to}
+                        className={[
+                          'flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-colors duration-150',
+                          location.pathname === item.to
+                            ? 'bg-wine-900 text-wine-300 border border-wine-700'
+                            : 'text-text-secondary hover:text-text-primary hover:bg-overlay',
+                        ].join(' ')}
+                      >
+                        {item.icon}
+                        {item.label}
+                      </Link>
+                    ))}
+                  </nav>
+                </>
               )}
-            </div>
-          )}
 
-          {/* User avatar dropdown */}
-          {user && (
-            <div className="relative" ref={userDropdown.ref}>
-              <button
-                onClick={() => userDropdown.setOpen(o => !o)}
-                className="flex items-center gap-2 hover:opacity-80 transition-opacity duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 rounded-full"
-              >
-                <Avatar src={undefined} name={user.name} size="md" border="default" />
-                <ChevronDown
-                  size={14}
-                  className={`text-text-secondary transition-transform duration-200 ${userDropdown.open ? 'rotate-180' : ''}`}
-                />
-              </button>
-
-              {userDropdown.open && (
-                <div className="absolute right-0 top-full mt-2 w-48 bg-elevated border border-border-subtle rounded-xl shadow-lg overflow-hidden z-50">
-                  <div className="px-4 py-3 border-b border-border-subtle">
-                    <p className="text-sm font-medium text-text-primary truncate">{user.name}</p>
-                    <p className="text-xs text-text-secondary truncate">{user.email}</p>
+              {/* User section */}
+              {user && (
+                <>
+                  <div className="border-t border-border-subtle my-3" />
+                  <div className="flex items-center gap-3 px-4 py-2 mb-1">
+                    <Avatar src={undefined} name={user.name} size="sm" border="default" />
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium text-text-primary truncate">{user.name}</p>
+                      <p className="text-xs text-text-tertiary truncate">{user.email}</p>
+                    </div>
                   </div>
                   <Link
                     to={`/profile/${user.id}`}
-                    onClick={() => userDropdown.setOpen(false)}
-                    className="flex items-center gap-3 px-4 py-2.5 text-sm text-text-secondary hover:text-text-primary hover:bg-overlay transition-colors duration-150"
+                    className="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm text-text-secondary hover:text-text-primary hover:bg-overlay transition-colors duration-150"
                   >
-                    <User size={14} />
+                    <User size={15} />
                     Ver Perfil
                   </Link>
                   <button
                     onClick={handleLogout}
-                    className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-text-secondary hover:text-error hover:bg-overlay transition-colors duration-150"
+                    className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm text-text-secondary hover:text-error hover:bg-overlay transition-colors duration-150"
                   >
-                    <LogOut size={14} />
+                    <LogOut size={15} />
                     Sair
                   </button>
-                </div>
+                </>
               )}
+
+              <div className="h-3" />
             </div>
-          )}
-        </div>
-      </div>
-    </header>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   )
 }
