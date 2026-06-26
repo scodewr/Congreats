@@ -3,9 +3,120 @@ import { Link, useParams } from 'react-router-dom'
 import { profileService } from '../services/profileService'
 import { recognitionService } from '../services/recognitionService'
 import { useAuth } from '../contexts/AuthContext'
-import type { AchievementsView, PageResult, ProfileView, RecognitionView } from '../types'
-import MedalsSection from '../components/profile/MedalsSection'
-import TrophiesSection from '../components/profile/TrophiesSection'
+import type { AchievementsView, MedalView, PageResult, ProfileView, RecognitionView, TrophyView } from '../types'
+import { MedalBadge, TrophyBadge } from '../components/ui/AchievementBadge'
+import TabNav from '../components/ui/TabNav'
+import Avatar from '../components/ui/Avatar'
+import Badge from '../components/ui/Badge'
+import Button from '../components/ui/Button'
+
+// ── Tab content components ────────────────────────────────────────────────────
+
+function RecognitionsTab({ recognitions }: { recognitions: PageResult<RecognitionView> | null }) {
+  if (!recognitions || recognitions.content.length === 0) {
+    return <p className="text-text-secondary text-center py-8">Nenhum reconhecimento ainda.</p>
+  }
+
+  return (
+    <div>
+      {recognitions.content.map((r) => (
+        <div
+          key={r.id}
+          className="bg-surface border-l-4 border-l-purple-500 border border-border-subtle rounded-2xl p-5 mb-3"
+        >
+          <div className="flex items-start justify-between mb-2">
+            <Link
+              to={`/profile/${r.recognizer.userId}`}
+              className="text-sm font-medium text-purple-300 hover:text-purple-400"
+            >
+              {r.recognizer.name}
+            </Link>
+            <span className="text-xs text-text-tertiary">
+              {new Date(r.createdAt).toLocaleDateString('pt-BR')}
+            </span>
+          </div>
+          <Badge variant="category">{r.category.name}</Badge>
+          {r.skills.length > 0 && (
+            <div className="flex flex-wrap gap-1 mt-2">
+              {r.skills.map((s) => (
+                <span key={s} className="text-xs bg-overlay text-text-secondary px-2 py-0.5 rounded-full">
+                  {s}
+                </span>
+              ))}
+            </div>
+          )}
+          <p className="text-sm text-text-secondary mt-2 italic">"{r.testimonial}"</p>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function SkillsTab({ skills }: { skills: ProfileView['topSkills'] }) {
+  if (skills.length === 0) {
+    return <p className="text-text-secondary text-center py-8">Nenhuma habilidade reconhecida ainda.</p>
+  }
+
+  return (
+    <div className="flex flex-wrap gap-2">
+      {skills.map((s) => (
+        <span
+          key={s.skill}
+          className="flex items-center gap-2 bg-purple-900 border border-purple-700/50 text-purple-300 px-3 py-1.5 rounded-full text-sm"
+        >
+          {s.skill}
+          <span className="bg-purple-700 text-purple-200 text-xs px-1.5 py-0.5 rounded-full">{s.count}</span>
+        </span>
+      ))}
+    </div>
+  )
+}
+
+function MedalsTab({ medals }: { medals: MedalView[] }) {
+  if (medals.length === 0) {
+    return (
+      <p className="text-text-secondary text-center py-8">
+        Nenhuma medalha ainda. Continue sendo reconhecido!
+      </p>
+    )
+  }
+
+  return (
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+      {medals.map((m) => (
+        <div key={m.id} className="flex flex-col items-center gap-2">
+          <MedalBadge label={m.milestone.charAt(0)} size="lg" />
+          <p className="text-gold-300 text-xs text-center">{m.label}</p>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function TrophiesTab({ trophies }: { trophies: TrophyView[] }) {
+  if (trophies.length === 0) {
+    return (
+      <p className="text-text-secondary text-center py-8">
+        Nenhum troféu ainda. Continue recebendo reconhecimentos!
+      </p>
+    )
+  }
+
+  return (
+    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+      {trophies.map((t) => (
+        <TrophyBadge
+          key={t.id}
+          label={t.level.charAt(0)}
+          name={`${t.skill} — ${t.levelLabel}`}
+          size="lg"
+        />
+      ))}
+    </div>
+  )
+}
+
+// ── ProfilePage ───────────────────────────────────────────────────────────────
 
 export default function ProfilePage() {
   const { userId } = useParams<{ userId: string }>()
@@ -28,130 +139,80 @@ export default function ProfilePage() {
       .finally(() => setLoading(false))
   }, [userId])
 
-  if (loading) return <div className="text-center text-gray-500 py-12">Carregando perfil...</div>
-  if (!profile) return <div className="text-center text-gray-500 py-12">Perfil não encontrado.</div>
+  if (loading) return <div className="text-center text-text-secondary py-12">Carregando perfil...</div>
+  if (!profile) return <div className="text-center text-text-secondary py-12">Perfil não encontrado.</div>
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6">
-        <div className="flex items-start justify-between">
-          <div className="flex items-center gap-4">
-            {profile.photoUrl ? (
-              <img src={profile.photoUrl} alt={profile.name}
-                className="w-20 h-20 rounded-full object-cover border-2 border-gray-100" />
-            ) : (
-              <div className="w-20 h-20 rounded-full bg-primary-100 flex items-center justify-center text-3xl font-bold text-primary-700">
-                {profile.name.charAt(0).toUpperCase()}
-              </div>
+      {/* Header com gradiente */}
+      <div className="bg-gradient-to-br from-purple-900/60 via-purple-900/30 to-wine-900/40 border border-purple-700/30 rounded-2xl p-8 mb-6">
+        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
+          <Avatar
+            src={profile.photoUrl}
+            name={profile.name}
+            size="xl"
+            border={achievements?.trophies.length ? 'gold' : 'default'}
+          />
+          <div className="flex-1 text-center sm:text-left">
+            <h1 className="text-3xl font-bold text-text-primary">{profile.name}</h1>
+            {profile.jobTitle && <p className="text-text-secondary mt-1">{profile.jobTitle}</p>}
+            {profile.company && <p className="text-text-tertiary text-sm">{profile.company}</p>}
+            {profile.bio && (
+              <p className="text-text-secondary text-sm mt-3 leading-relaxed">{profile.bio}</p>
             )}
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">{profile.name}</h1>
-              {profile.jobTitle && <p className="text-gray-600">{profile.jobTitle}</p>}
-              {profile.company && <p className="text-sm text-gray-400">{profile.company}</p>}
-            </div>
           </div>
           {isOwner && (
-            <Link to="/profile/edit"
-              className="text-sm border border-gray-300 rounded-lg px-3 py-1.5 text-gray-600 hover:border-primary-400">
-              Editar perfil
+            <Link to="/profile/edit">
+              <Button variant="secondary" size="sm">Editar Perfil</Button>
             </Link>
           )}
         </div>
 
-        {profile.bio && <p className="mt-4 text-gray-600 text-sm leading-relaxed">{profile.bio}</p>}
-
-        <div className="mt-4 flex gap-4 text-sm text-gray-500">
-          <span><strong className="text-gray-900">{profile.totalRecognitions}</strong> reconhecimentos</span>
+        {/* Stats bar */}
+        <div className="flex gap-6 mt-6 pt-6 border-t border-purple-700/30">
+          <div className="text-center">
+            <p className="text-2xl font-bold text-purple-300">{profile.totalRecognitions}</p>
+            <p className="text-xs text-text-secondary">Reconhecimentos</p>
+          </div>
+          <div className="w-px bg-border-subtle" />
+          <div className="text-center">
+            <p className="text-2xl font-bold text-gold-400">{achievements?.medals.length ?? 0}</p>
+            <p className="text-xs text-text-secondary">Medalhas</p>
+          </div>
+          <div className="w-px bg-border-subtle" />
+          <div className="text-center">
+            <p className="text-2xl font-bold text-gold-400">{achievements?.trophies.length ?? 0}</p>
+            <p className="text-xs text-text-secondary">Troféus</p>
+          </div>
         </div>
       </div>
 
-      {/* Top Skills */}
-      {profile.topSkills.length > 0 && (
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h2 className="font-semibold text-gray-900 mb-3">Principais habilidades</h2>
-          <div className="flex flex-wrap gap-2">
-            {profile.topSkills.map((s) => (
-              <span key={s.skill}
-                className="inline-flex items-center gap-1.5 bg-primary-50 text-primary-700 text-sm px-3 py-1 rounded-full">
-                {s.skill}
-                <span className="text-xs bg-primary-200 text-primary-800 rounded-full px-1.5 py-0.5">{s.count}</span>
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Achievements */}
-      {achievements && (achievements.medals.length > 0 || achievements.trophies.length > 0) && (
-        <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-6">
-          <h2 className="font-semibold text-gray-900">Conquistas</h2>
-          <MedalsSection medals={achievements.medals} />
-          <TrophiesSection trophies={achievements.trophies} />
-        </div>
-      )}
-
-      {/* Projects */}
-      {profile.projects.length > 0 && (
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h2 className="font-semibold text-gray-900 mb-3">Projetos</h2>
-          <div className="space-y-3">
-            {profile.projects.map((p, i) => (
-              <div key={i} className="flex items-start gap-3">
-                <span className={`mt-0.5 w-2 h-2 rounded-full flex-shrink-0 ${p.status === 'ACTIVE' ? 'bg-green-500' : 'bg-gray-300'}`} />
-                <div>
-                  <p className="font-medium text-gray-900 text-sm">{p.name}</p>
-                  {p.description && <p className="text-xs text-gray-500">{p.description}</p>}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Teams */}
-      {profile.teams.length > 0 && (
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h2 className="font-semibold text-gray-900 mb-3">Equipes e Iniciativas</h2>
-          <div className="space-y-2">
-            {profile.teams.map((t, i) => (
-              <div key={i} className="flex items-center gap-2 text-sm text-gray-700">
-                <span className="font-medium">{t.name}</span>
-                {t.role && <span className="text-gray-400">· {t.role}</span>}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Recognitions */}
-      {recognitions && recognitions.content.length > 0 && (
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h2 className="font-semibold text-gray-900 mb-4">Reconhecimentos</h2>
-          <div className="space-y-4">
-            {recognitions.content.map((r) => (
-              <div key={r.id} className="border-b border-gray-100 last:border-0 pb-4 last:pb-0">
-                <div className="flex items-start justify-between mb-1">
-                  <Link to={`/profile/${r.recognizer.userId}`}
-                    className="text-sm font-medium text-primary-600 hover:underline">
-                    {r.recognizer.name}
-                  </Link>
-                  <span className="text-xs text-gray-400">
-                    {new Date(r.createdAt).toLocaleDateString('pt-BR')}
-                  </span>
-                </div>
-                <div className="flex flex-wrap gap-1 mb-2">
-                  {r.skills.map((s) => (
-                    <span key={s} className="text-xs bg-gray-100 text-gray-700 px-2 py-0.5 rounded-full">{s}</span>
-                  ))}
-                  <span className="text-xs bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full">{r.category.name}</span>
-                </div>
-                <p className="text-sm text-gray-600 italic">"{r.testimonial}"</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      {/* TabNav com 4 tabs */}
+      <TabNav
+        defaultTab="recognitions"
+        tabs={[
+          {
+            id: 'recognitions',
+            label: 'Reconhecimentos',
+            content: <RecognitionsTab recognitions={recognitions} />,
+          },
+          {
+            id: 'skills',
+            label: 'Habilidades',
+            content: <SkillsTab skills={profile.topSkills} />,
+          },
+          {
+            id: 'medals',
+            label: 'Medalhas',
+            content: <MedalsTab medals={achievements?.medals ?? []} />,
+          },
+          {
+            id: 'trophies',
+            label: 'Troféus',
+            content: <TrophiesTab trophies={achievements?.trophies ?? []} />,
+          },
+        ]}
+      />
     </div>
   )
 }
