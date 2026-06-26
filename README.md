@@ -1,6 +1,15 @@
-# Congreats
+<div align="center">
 
-Plataforma gamificada de reconhecimento profissional. Reconheça talentos, destaque habilidades e construa uma cultura de feedback positivo dentro da sua empresa ou comunidade.
+# ◆ Congreats
+
+*Drived by Orbix*
+
+---
+
+**Plataforma gamificada de reconhecimento profissional.**  
+Reconheça talentos, destaque habilidades e construa uma cultura de feedback positivo dentro da sua empresa ou comunidade.
+
+</div>
 
 ---
 
@@ -25,7 +34,10 @@ O modo é definido pela variável de ambiente `CONGREATS_MODE` (`WORLD` ou `ENTE
 | ORM | Hibernate ORM Panache |
 | Autenticação | JWT HMAC256 (Auth0 java-jwt 4.4.0) |
 | Criptografia | jBCrypt 0.4 (rounds=12) |
-| Frontend | React 18, TypeScript 5, Vite 5, Tailwind CSS |
+| Frontend | React 18, TypeScript 5, Vite 5 |
+| Estilização | Tailwind CSS com design system próprio (paleta void/roxo/vinho/dourado) |
+| Animações | Framer Motion v11 (AnimatePresence, transições de rota, whileHover/whileTap) |
+| Ícones | Lucide React |
 | Roteamento | React Router v6 |
 | HTTP Client | Axios |
 
@@ -204,31 +216,57 @@ cd backend && mvn verify -DskipITs=false
 
 ```
 Congreats/
-├── .env.example                        # Variáveis de ambiente (template)
-├── docker-compose.yml                  # Orquestra postgres + backend + frontend
-├── backend/                            # Quarkus (Java 21)
+├── .env.example                          # Variáveis de ambiente (template)
+├── docker-compose.yml                    # Orquestra postgres + backend + frontend
+├── Makefile                              # Atalhos: build, up, down, logs, ps
+├── .specs/                               # Documentação de produto e features
+│   ├── project/
+│   │   ├── PROJECT.md                    # Visão e objetivos
+│   │   ├── ROADMAP.md                    # Features e milestones
+│   │   ├── STATE.md                      # Decisões, bloqueios e pendências
+│   │   └── DESIGN-SYSTEM.md             # Design system — paleta, tipografia, animações
+│   └── features/                         # Specs e tasks por feature
+├── backend/                              # Quarkus (Java 21)
 │   ├── pom.xml
 │   └── src/
 │       ├── main/
-│       │   ├── docker/Dockerfile.jvm   # Imagem multi-stage (build + runtime JRE)
+│       │   ├── docker/Dockerfile.jvm     # Imagem multi-stage (build + runtime JRE)
 │       │   ├── java/com/congreats/
-│       │   │   ├── domain/             # Entidades, Value Objects, exceções
-│       │   │   ├── application/        # Use Cases, Ports (in/out), DTOs
-│       │   │   └── infrastructure/     # JPA Entities, Controllers, Adapters, Config
+│       │   │   ├── domain/               # Entidades, Value Objects, exceções de domínio
+│       │   │   ├── application/          # Use Cases, Ports (in/out), DTOs
+│       │   │   └── infrastructure/       # JPA Entities, Controllers JAX-RS, Adapters
 │       │   └── resources/
 │       │       ├── application.properties
-│       │       └── db/migration/       # Flyway V001–V005
+│       │       └── db/migration/         # Flyway V001–V009
 │       └── test/
-│           ├── domain/                 # Testes unitários
-│           └── integration/            # Testes de integração (Dev Services)
-└── frontend/                           # React 18 + TypeScript
-    ├── Dockerfile                      # Imagem multi-stage (build + nginx)
-    ├── nginx.conf                      # SPA fallback + proxy /api/ → backend
+│           ├── domain/                   # Testes unitários
+│           └── integration/              # Testes de integração (Dev Services)
+└── frontend/                             # React 18 + TypeScript
+    ├── Dockerfile                        # Imagem multi-stage (build + nginx)
+    ├── nginx.conf                        # SPA fallback + proxy /api/ → backend
+    ├── tailwind.config.js                # Design system completo (tokens de cor, sombras)
     └── src/
-        ├── contexts/                   # AuthContext (JWT + refresh token)
-        ├── pages/                      # Login, Register, Dashboard, Profile, etc.
-        ├── services/                   # authService, profileService, recognitionService
-        └── types/                      # Tipos TypeScript
+        ├── components/
+        │   ├── ui/                       # Biblioteca de componentes
+        │   │   ├── Button.tsx            # 6 variantes + loading + animação de press
+        │   │   ├── Card.tsx              # Card com hover glow e sub-componentes
+        │   │   ├── Avatar.tsx            # Foto ou iniciais, 5 tamanhos, 3 estilos de borda
+        │   │   ├── Badge.tsx             # 7 variantes de cor
+        │   │   ├── Input.tsx             # Input dark com foco roxo e estado de erro
+        │   │   ├── Textarea.tsx          # Mesmo padrão do Input
+        │   │   ├── Select.tsx            # Select dark com ícone chevron
+        │   │   ├── TabNav.tsx            # Tabs com pill ativo e fade entre conteúdos
+        │   │   └── AchievementBadge.tsx  # MedalBadge, TrophyBadge e RankingBadge
+        │   ├── AnimatedRoute.tsx         # Slide+fade entre rotas com prefers-reduced-motion
+        │   ├── Layout.tsx                # Shell com TopBar e AnimatePresence
+        │   └── Navbar.tsx                # TopBar responsivo (mobile/tablet/desktop)
+        ├── contexts/                     # AuthContext (JWT + refresh token)
+        ├── pages/                        # Login, Register, Dashboard, Profile, Discovery,
+        │                                 # Workspaces, CreateRecognition, EditProfile,
+        │                                 # MyValidations, ValidatorAssignments e Admin/*
+        ├── services/                     # authService, profileService, recognitionService,
+        │                                 # workspaceService, validationService, adminService
+        └── types/                        # Tipos TypeScript globais
 ```
 
 ### Arquitetura Backend
@@ -257,10 +295,10 @@ Hexagonal adaptada com DDD Tático:
 
 | Método | Path | Descrição | Auth |
 |--------|------|-----------|------|
-| `GET` | `/profiles` | Listar profissionais (`?page=0&size=20`) | Sim |
+| `GET` | `/profiles` | Listar profissionais (`?page&size&q`) | Sim |
 | `GET` | `/profiles/me` | Ver o próprio perfil | Sim |
 | `GET` | `/profiles/{userId}` | Ver perfil de um profissional | Sim |
-| `PUT` | `/profiles/{userId}` | Atualizar perfil | Sim |
+| `PUT` | `/profiles/{userId}` | Atualizar perfil (bio, cargo, projetos, equipes) | Sim |
 | `POST` | `/profiles/{userId}/photo` | Enviar foto de perfil (multipart) | Sim |
 
 ### Reconhecimentos
@@ -268,13 +306,75 @@ Hexagonal adaptada com DDD Tático:
 | Método | Path | Descrição | Auth |
 |--------|------|-----------|------|
 | `POST` | `/recognitions` | Criar reconhecimento | Sim |
-| `GET` | `/recognitions?professionalId={id}` | Listar reconhecimentos de um profissional | Sim |
+| `GET` | `/recognitions` | Listar reconhecimentos (`?professionalId&page&size`) | Sim |
+
+### Descoberta
+
+| Método | Path | Descrição | Auth |
+|--------|------|-----------|------|
+| `GET` | `/discovery/feed` | Feed global de reconhecimentos (`?page&size`) | Sim |
+| `GET` | `/discovery/ranking` | Ranking de profissionais mais reconhecidos | Sim |
 
 ### Categorias
 
 | Método | Path | Descrição | Auth |
 |--------|------|-----------|------|
 | `GET` | `/categories` | Listar categorias ativas | Sim |
+
+### Workspaces
+
+| Método | Path | Descrição | Auth |
+|--------|------|-----------|------|
+| `POST` | `/workspaces` | Criar workspace | Sim |
+| `GET` | `/workspaces/mine` | Listar workspaces do usuário | Sim |
+| `POST` | `/workspaces/{id}/members` | Adicionar membro | Sim |
+| `GET` | `/workspaces/{id}/feed` | Feed do workspace (`?page&size`) | Sim |
+
+### Medalhas e Troféus
+
+| Método | Path | Descrição | Auth |
+|--------|------|-----------|------|
+| `GET` | `/medals/{userId}` | Listar medalhas de um profissional | Sim |
+| `GET` | `/trophies/{userId}` | Listar troféus de um profissional | Sim |
+
+### Validação de Habilidades
+
+| Método | Path | Descrição | Auth |
+|--------|------|-----------|------|
+| `POST` | `/skill-validations` | Solicitar validação de habilidade | Sim |
+| `GET` | `/skill-validations/mine` | Ver minhas validações | Sim |
+| `GET` | `/skill-validations/assignments` | Ver validações atribuídas a mim (validator) | Sim |
+| `POST` | `/skill-validations/{id}/questionnaire` | Submeter questionário de validação | Sim |
+
+### Integrações (Webhooks)
+
+| Método | Path | Descrição | Auth |
+|--------|------|-----------|------|
+| `POST` | `/webhooks/github` | Receber eventos do GitHub | Não* |
+| `POST` | `/webhooks/jira` | Receber eventos do Jira | Não* |
+| `POST` | `/webhooks/linear` | Receber eventos do Linear | Não* |
+
+*Verificação por token de integração no header.
+
+### Admin
+
+| Método | Path | Descrição | Auth (ADMIN) |
+|--------|------|-----------|------|
+| `GET` | `/admin/users` | Listar usuários (`?page&size`) | Sim |
+| `PUT` | `/admin/users/{id}/role` | Alterar papel do usuário | Sim |
+| `GET` | `/admin/workspaces` | Listar todos os workspaces | Sim |
+| `GET` | `/admin/categories` | Listar categorias | Sim |
+| `POST` | `/admin/categories` | Criar categoria | Sim |
+| `PUT` | `/admin/categories/{id}` | Atualizar categoria | Sim |
+| `DELETE` | `/admin/categories/{id}` | Desativar categoria | Sim |
+| `GET` | `/admin/campaigns` | Listar campanhas | Sim |
+| `POST` | `/admin/campaigns` | Criar campanha | Sim |
+| `GET` | `/admin/events` | Listar eventos | Sim |
+| `POST` | `/admin/events` | Criar evento de reconhecimento | Sim |
+| `GET` | `/admin/validations` | Listar todas as validações de habilidade | Sim |
+| `POST` | `/admin/validations/{id}/assign` | Atribuir validador | Sim |
+| `GET` | `/admin/integrations` | Listar integrações configuradas | Sim |
+| `POST` | `/admin/integrations` | Criar integração | Sim |
 
 ### Arquivos
 
@@ -289,13 +389,23 @@ Hexagonal adaptada com DDD Tático:
 | Versão | Status | Features |
 |--------|--------|----------|
 | v1.0 | ✅ Concluída | Auth (World/Enterprise), Perfil Profissional, Sistema de Reconhecimentos |
-| v1.1 | Planejado | Feed de Descoberta, Ranking |
-| v1.2 | Planejado | Workspaces |
-| v1.3 | Planejado | Painel Administrativo |
-| v2.0 | Planejado | Medalhas e Troféus (gamificação) |
-| v2.1 | Planejado | Validação de Habilidades |
-| v2.2 | Planejado | Notificações (Email, WhatsApp, SMS) |
-| v3.0 | Planejado | Integrações com APIs (GitHub, Jira, Linear) |
-| v4.0 | Planejado | Certificações de Excelência |
+| v1.1 | ✅ Concluída | Feed de Descoberta, Ranking de Profissionais |
+| v1.2 | ✅ Concluída | Workspaces — espaços colaborativos com feed próprio |
+| v1.3 | ✅ Concluída | Painel Administrativo — usuários, categorias, campanhas e eventos |
+| v2.0 | ✅ Concluída | Medalhas e Troféus — gamificação de reconhecimentos |
+| v2.1 | ✅ Concluída | Validação de Habilidades — questionários e validadores |
+| v2.2 | ⏳ Adiado para v4.1 | Notificações (Email, WhatsApp, SMS) |
+| v3.0 | ✅ Concluída | Integrações com APIs (GitHub, Jira, Linear via webhooks) |
+| v3.1 | ✅ Concluída | Design System — visual dark (void/roxo/vinho/dourado), animações e componentes |
+| v4.0 | 🗓 Planejado | Certificações de Excelência |
+| v4.1 | 🗓 Planejado | Notificações (Email, WhatsApp, SMS) |
 
-Detalhes em [`.specs/project/ROADMAP.md`](.specs/project/ROADMAP.md) e progresso em [`.specs/project/PROGRESS.md`](.specs/project/PROGRESS.md).
+Detalhes em [`.specs/project/ROADMAP.md`](.specs/project/ROADMAP.md) e decisões arquiteturais em [`.specs/project/STATE.md`](.specs/project/STATE.md).
+
+---
+
+<div align="center">
+
+*© Orbix Drive — Todos os direitos reservados*
+
+</div>
